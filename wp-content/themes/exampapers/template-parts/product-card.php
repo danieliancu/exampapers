@@ -13,17 +13,21 @@ if ( ! $product instanceof WC_Product || ! $product->is_visible() ) {
 	return;
 }
 
+$show_product_media = ! is_shop();
+
 ?>
 
 <li <?php wc_product_class( 'exampapers-product-card', $product ); ?>>
 	<a class="exampapers-product-card-link" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'View %s', 'exampapers' ), get_the_title() ) ); ?>">
-		<span class="exampapers-product-card-media">
-			<?php if ( has_post_thumbnail() ) : ?>
-				<?php echo woocommerce_get_product_thumbnail(); ?>
-			<?php else : ?>
-				<span class="exampapers-product-placeholder" aria-hidden="true">PDF</span>
-			<?php endif; ?>
-		</span>
+		<?php if ( $show_product_media ) : ?>
+			<span class="exampapers-product-card-media">
+				<?php if ( has_post_thumbnail() ) : ?>
+					<?php echo woocommerce_get_product_thumbnail(); ?>
+				<?php else : ?>
+					<span class="exampapers-product-placeholder" aria-hidden="true">PDF</span>
+				<?php endif; ?>
+			</span>
+		<?php endif; ?>
 
 		<?php exampapers_product_badges( $product ); ?>
 

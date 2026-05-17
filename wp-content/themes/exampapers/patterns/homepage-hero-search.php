@@ -45,7 +45,8 @@ sort( $search_suggestions, SORT_NATURAL | SORT_FLAG_CASE );
 			<label for="exampapers-home-search"><?php esc_html_e( 'Search by school, exam area or subject', 'exampapers' ); ?></label>
 			<div class="exampapers-search-panel__row">
 				<div class="exampapers-search-autocomplete" data-exampapers-autocomplete>
-					<input id="exampapers-home-search" type="search" name="s" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="<?php esc_attr_e( 'e.g. CSSE, Kent Test, English, Tiffin', 'exampapers' ); ?>" aria-autocomplete="list" aria-controls="exampapers-home-search-suggestions" aria-expanded="false">
+					<input id="exampapers-home-search" type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="<?php esc_attr_e( 'e.g. CSSE, Kent Test, English, Tiffin', 'exampapers' ); ?>" aria-autocomplete="list" aria-controls="exampapers-home-search-suggestions" aria-expanded="false">
+					<input type="hidden" name="s" value="" data-exampapers-search-value>
 					<?php if ( ! empty( $search_suggestions ) ) : ?>
 						<ul id="exampapers-home-search-suggestions" class="exampapers-search-suggestions" hidden>
 							<?php foreach ( $search_suggestions as $suggestion ) : ?>

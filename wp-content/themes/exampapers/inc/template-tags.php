@@ -120,6 +120,48 @@ function exampapers_cart_link() {
 }
 
 /**
+ * Render a header navigation link with an active state.
+ *
+ * @param string $url Link URL.
+ * @param string $label Link label.
+ * @param bool   $is_current Whether the link points to the current view.
+ */
+function exampapers_header_nav_link( $url, $label, $is_current = false ) {
+	printf(
+		'<a href="%1$s"%2$s>%3$s</a>',
+		esc_url( $url ),
+		$is_current ? ' aria-current="page"' : '',
+		esc_html( $label )
+	);
+}
+
+/**
+ * Check whether the current product category is a slug or one of its children.
+ *
+ * @param string $slug Product category slug.
+ * @return bool
+ */
+function exampapers_is_product_category_or_child( $slug ) {
+	if ( ! is_tax( 'product_cat' ) ) {
+		return false;
+	}
+
+	$term = get_queried_object();
+
+	if ( ! $term instanceof WP_Term ) {
+		return false;
+	}
+
+	if ( $slug === $term->slug ) {
+		return true;
+	}
+
+	$parent = get_term_by( 'slug', $slug, 'product_cat' );
+
+	return $parent instanceof WP_Term && in_array( $parent->term_id, get_ancestors( $term->term_id, 'product_cat' ), true );
+}
+
+/**
  * Render the complete site header.
  */
 function exampapers_site_header() {
@@ -137,10 +179,12 @@ function exampapers_site_header() {
 			</button>
 
 			<nav id="exampapers-main-nav" class="exampapers-main-nav" aria-label="<?php esc_attr_e( 'Main navigation', 'exampapers' ); ?>">
-				<a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"><?php esc_html_e( 'Shop', 'exampapers' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/product-category/11-plus/' ) ); ?>"><?php esc_html_e( '11+ Areas', 'exampapers' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/product-category/free-samples/' ) ); ?>"><?php esc_html_e( 'Free Samples', 'exampapers' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php esc_html_e( 'Parent Guide', 'exampapers' ); ?></a>
+				<?php
+				exampapers_header_nav_link( home_url( '/shop/' ), __( 'Shop', 'exampapers' ), function_exists( 'is_shop' ) && is_shop() );
+				exampapers_header_nav_link( home_url( '/product-category/11-plus/' ), __( '11+ Areas', 'exampapers' ), exampapers_is_product_category_or_child( '11-plus' ) );
+				exampapers_header_nav_link( home_url( '/product-category/free-samples/' ), __( 'Free Samples', 'exampapers' ), exampapers_is_product_category_or_child( 'free-samples' ) );
+				exampapers_header_nav_link( home_url( '/blog/' ), __( 'Parent Guide', 'exampapers' ), ! is_front_page() && ( is_home() || is_singular( 'post' ) || is_category() || is_tag() ) );
+				?>
 			</nav>
 
 			<div class="exampapers-header-actions">

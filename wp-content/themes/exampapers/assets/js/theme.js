@@ -45,20 +45,29 @@
 
 	document.querySelectorAll('[data-exampapers-autocomplete]').forEach(function (autocomplete) {
 		var input = autocomplete.querySelector('input[type="search"]');
+		var searchValue = autocomplete.querySelector('[data-exampapers-search-value]');
 		var suggestions = autocomplete.querySelector('.exampapers-search-suggestions');
 
-		if (!input || !suggestions) {
+		if (!input) {
 			return;
 		}
 
-		var buttons = Array.prototype.slice.call(suggestions.querySelectorAll('[data-suggestion]'));
+		var buttons = suggestions ? Array.prototype.slice.call(suggestions.querySelectorAll('[data-suggestion]')) : [];
 
 		function closeSuggestions() {
+			if (!suggestions) {
+				return;
+			}
+
 			suggestions.hidden = true;
 			input.setAttribute('aria-expanded', 'false');
 		}
 
 		function openSuggestions() {
+			if (!suggestions) {
+				return;
+			}
+
 			suggestions.hidden = false;
 			input.setAttribute('aria-expanded', 'true');
 		}
@@ -66,6 +75,14 @@
 		function updateSuggestions() {
 			var query = input.value.trim().toLowerCase();
 			var visibleCount = 0;
+
+			if (searchValue) {
+				searchValue.value = input.value;
+			}
+
+			if (!suggestions) {
+				return;
+			}
 
 			buttons.forEach(function (button) {
 				var value = button.getAttribute('data-suggestion') || '';
@@ -96,10 +113,21 @@
 		buttons.forEach(function (button) {
 			button.addEventListener('click', function () {
 				input.value = button.getAttribute('data-suggestion') || button.textContent.trim();
+				if (searchValue) {
+					searchValue.value = input.value;
+				}
 				closeSuggestions();
 				input.focus();
 			});
 		});
+
+		if (autocomplete.form) {
+			autocomplete.form.addEventListener('submit', function () {
+				if (searchValue) {
+					searchValue.value = input.value;
+				}
+			});
+		}
 
 		document.addEventListener('click', function (event) {
 			if (!autocomplete.contains(event.target)) {
