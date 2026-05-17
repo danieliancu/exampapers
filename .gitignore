@@ -1,0 +1,41 @@
+# WordPress core
+/wp-admin/
+/wp-includes/
+index.php
+license.txt
+readme.html
+wp-*.php
+xmlrpc.php
+
+# Config / secrets
+wp-config.php
+.env
+.env.*
+
+# wp-content generated files
+/wp-content/uploads/
+/wp-content/upgrade/
+/wp-content/cache/
+/wp-content/backups/
+/wp-content/backup*/
+/wp-content/ai1wm-backups/
+/wp-content/wflogs/
+
+# Ignore all themes
+/wp-content/themes/*
+
+# Keep only your custom theme
+!/wp-content/themes/exampapers/
+
+# Ignore all plugins
+/wp-content/plugins/*
+
+# Optional: keep custom plugins if needed later
+# !/wp-content/plugins/numele-pluginului-tau/
+
+# Logs / system / editor
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

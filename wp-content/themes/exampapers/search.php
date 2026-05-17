@@ -1,0 +1,46 @@
+<?php
+/**
+ * Search results template.
+ *
+ * @package Exampapers
+ */
+
+get_header();
+?>
+
+<main id="primary" class="exampapers-page-section exampapers-content">
+	<h1>
+		<?php
+		printf(
+			/* translators: %s: Search query. */
+			esc_html__( 'Search results for "%s"', 'exampapers' ),
+			esc_html( get_search_query() )
+		);
+		?>
+	</h1>
+
+	<?php get_search_form(); ?>
+
+	<?php if ( have_posts() ) : ?>
+		<div class="exampapers-resource-grid">
+			<?php
+			while ( have_posts() ) {
+				the_post();
+				?>
+				<article id="post-<?php the_ID(); ?>" <?php post_class( 'exampapers-card' ); ?>>
+					<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+					<?php the_excerpt(); ?>
+				</article>
+				<?php
+			}
+			?>
+		</div>
+
+		<?php the_posts_pagination(); ?>
+	<?php else : ?>
+		<p><?php esc_html_e( 'No results found. Try searching by exam area, school or subject.', 'exampapers' ); ?></p>
+	<?php endif; ?>
+</main>
+
+<?php
+get_footer();

@@ -1,0 +1,202 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"border": {
+			"radius": true,
+			"style": true,
+			"width": true
+		},
+		"color": {
+			"defaultDuotone": false,
+			"defaultGradients": false,
+			"palette": [
+				{
+					"slug": "exampapers-navy",
+					"color": "#172554",
+					"name": "Exampapers Navy"
+				},
+				{
+					"slug": "exampapers-blue",
+					"color": "#2563eb",
+					"name": "Exampapers Blue"
+				},
+				{
+					"slug": "exampapers-cyan",
+					"color": "#0891b2",
+					"name": "Exampapers Cyan"
+				},
+				{
+					"slug": "exampapers-green",
+					"color": "#16a34a",
+					"name": "Exampapers Green"
+				},
+				{
+					"slug": "exampapers-warning",
+					"color": "#f59e0b",
+					"name": "Warning"
+				},
+				{
+					"slug": "exampapers-ink",
+					"color": "#111827",
+					"name": "Ink"
+				},
+				{
+					"slug": "exampapers-muted",
+					"color": "#5b6472",
+					"name": "Muted"
+				},
+				{
+					"slug": "exampapers-line",
+					"color": "#d9e2ef",
+					"name": "Line"
+				},
+				{
+					"slug": "exampapers-surface",
+					"color": "#f7fafc",
+					"name": "Surface"
+				},
+				{
+					"slug": "exampapers-paper",
+					"color": "#ffffff",
+					"name": "Paper"
+				}
+			]
+		},
+		"layout": {
+			"contentSize": "760px",
+			"wideSize": "1180px"
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"spacingScale": {
+				"steps": 0
+			},
+			"spacingSizes": [
+				{
+					"slug": "20",
+					"size": "0.5rem",
+					"name": "2"
+				},
+				{
+					"slug": "30",
+					"size": "1rem",
+					"name": "3"
+				},
+				{
+					"slug": "40",
+					"size": "1.5rem",
+					"name": "4"
+				},
+				{
+					"slug": "50",
+					"size": "2rem",
+					"name": "5"
+				},
+				{
+					"slug": "60",
+					"size": "3rem",
+					"name": "6"
+				},
+				{
+					"slug": "70",
+					"size": "4rem",
+					"name": "7"
+				},
+				{
+					"slug": "80",
+					"size": "6rem",
+					"name": "8"
+				}
+			]
+		},
+		"typography": {
+			"fluid": true,
+			"fontSizes": [
+				{
+					"slug": "small",
+					"size": "0.9rem",
+					"name": "Small"
+				},
+				{
+					"slug": "medium",
+					"size": "1rem",
+					"name": "Medium"
+				},
+				{
+					"slug": "large",
+					"size": "1.35rem",
+					"name": "Large"
+				},
+				{
+					"slug": "x-large",
+					"size": "clamp(1.75rem, 3vw, 2.5rem)",
+					"name": "Extra Large"
+				},
+				{
+					"slug": "xx-large",
+					"size": "clamp(2.25rem, 5vw, 4rem)",
+					"name": "Huge"
+				}
+			]
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "#f7fafc",
+			"text": "#111827"
+		},
+		"elements": {
+			"button": {
+				"border": {
+					"radius": "6px"
+				},
+				"color": {
+					"background": "#2563eb",
+					"text": "#ffffff"
+				},
+				"spacing": {
+					"padding": {
+						"bottom": "0.75rem",
+						"left": "1rem",
+						"right": "1rem",
+						"top": "0.75rem"
+					}
+				},
+				"typography": {
+					"fontWeight": "700"
+				}
+			},
+			"heading": {
+				"color": {
+					"text": "#172554"
+				},
+				"typography": {
+					"fontWeight": "800",
+					"letterSpacing": "0",
+					"lineHeight": "1.15"
+				}
+			},
+			"link": {
+				"color": {
+					"text": "#2563eb"
+				}
+			}
+		},
+		"spacing": {
+			"blockGap": "1.25rem",
+			"padding": {
+				"bottom": "0",
+				"left": "0",
+				"right": "0",
+				"top": "0"
+			}
+		},
+		"typography": {
+			"fontFamily": "Arial, Helvetica, sans-serif",
+			"lineHeight": "1.6"
+		}
+	}
+}

@@ -1,0 +1,546 @@
+:root {
+	--exampapers-navy: #172554;
+	--exampapers-blue: #2563eb;
+	--exampapers-cyan: #0891b2;
+	--exampapers-green: #16a34a;
+	--exampapers-ink: #111827;
+	--exampapers-muted: #5b6472;
+	--exampapers-line: #d9e2ef;
+	--exampapers-surface: #f7fafc;
+	--exampapers-paper: #ffffff;
+	--exampapers-warning: #f59e0b;
+}
+
+body {
+	background: var(--exampapers-surface);
+	color: var(--exampapers-ink);
+	font-family: 'Poppins', Arial, sans-serif;
+}
+
+a {
+	text-decoration-thickness: 1.5px;
+	text-underline-offset: 0.18em;
+}
+
+a:hover,
+a:focus {
+	color: var(--exampapers-blue);
+}
+
+a:focus:not(:focus-visible) {
+	outline: none;
+}
+
+.wp-site-blocks {
+	min-height: 100vh;
+	overflow-x: clip;
+}
+
+.wp-site-blocks > main,
+.wp-site-blocks > .woocommerce,
+.site-main {
+	padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+.exampapers-header {
+	background: rgba(255, 255, 255, 0.96);
+	border-bottom: 1px solid var(--exampapers-line);
+	position: sticky;
+	top: 0;
+	z-index: 20;
+}
+
+.admin-bar .exampapers-header {
+	top: 32px;
+}
+
+.exampapers-header__inner,
+.exampapers-footer__inner,
+.exampapers-section-inner,
+.exampapers-content {
+	margin-inline: auto;
+	max-width: 1180px;
+	padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+.exampapers-header__inner {
+	align-items: center;
+	display: flex;
+	gap: 1rem;
+	justify-content: space-between;
+	padding-block: 1rem;
+}
+
+.exampapers-brand a {
+	color: var(--exampapers-navy);
+	font-size: 1.2rem;
+	font-weight: 900;
+	text-decoration: none;
+}
+
+.exampapers-nav-toggle {
+	background: none;
+	border: none;
+	cursor: pointer;
+	display: none;
+	flex-direction: column;
+	gap: 5px;
+	margin-left: auto;
+	padding: 0.4rem;
+}
+
+.exampapers-nav-toggle span {
+	background: var(--exampapers-navy);
+	border-radius: 2px;
+	display: block;
+	height: 2px;
+	transition: transform 0.22s ease, opacity 0.22s ease;
+	width: 22px;
+}
+
+.exampapers-main-nav {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.85rem;
+	justify-content: flex-end;
+}
+
+.exampapers-main-nav > a {
+	color: var(--exampapers-ink);
+	font-weight: 700;
+	text-decoration: none;
+	font-size:1.2rem;
+	padding: 0 10px;
+}
+
+.exampapers-main-nav > a:hover,
+.exampapers-main-nav > a:focus {
+	color: var(--exampapers-blue);
+}
+
+.exampapers-account-link,
+.exampapers-mini-cart {
+	align-items: center;
+	display: inline-flex;
+	font-size: var(--wp--preset--font-size--medium, 1rem);
+}
+
+.exampapers-account-link a,
+.exampapers-mini-cart a,
+.exampapers-mini-cart .wc-block-mini-cart__button {
+	align-items: center;
+	background: transparent;
+	border: 0;
+	color: var(--exampapers-ink);
+	display: inline-flex;
+	min-height: 2rem;
+	padding: 0;
+	text-decoration: none;
+}
+
+.wc-block-customer-account__account-icon,
+.wc-block-mini-cart__icon {
+	height: 1.8rem;
+	width: 1.8rem;
+}
+
+.wc-block-mini-cart__quantity-badge {
+	display: inline-flex;
+	position: relative;
+}
+
+.wc-block-mini-cart__badge {
+	align-items: center;
+	background: var(--exampapers-blue);
+	border-radius: 999px;
+	color: #ffffff;
+	display: inline-flex;
+	font-size: 0.72rem;
+	font-weight: 800;
+	height: 1.1rem;
+	justify-content: center;
+	min-width: 1.1rem;
+	position: absolute;
+	right: -0.45rem;
+	top: -0.45rem;
+}
+
+.wp-block-site-title a {
+	color: var(--exampapers-navy);
+	font-weight: 800;
+	letter-spacing: 0;
+	text-decoration: none;
+}
+
+.wp-block-navigation a {
+	font-weight: 650;
+}
+
+.wp-block-button__link,
+.wp-element-button,
+button,
+input[type="submit"] {
+	background: var(--exampapers-blue);
+	border: none;
+	border-radius: 6px;
+	color: white;
+	font-weight: 700;
+	padding: 10px;
+}
+
+.exampapers-page-section {
+	padding-block: clamp(2.5rem, 6vw, 5rem);
+	position: relative;
+}
+
+.exampapers-section-white {
+	background: #ffffff;
+	padding-bottom: clamp(3.5rem, 7vw, 6rem);
+}
+
+.exampapers-page-section .exampapers-section-inner {
+	display: grid;
+	gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+
+.exampapers-page-section .woocommerce {
+	min-width: 0;
+	width: 100%;
+}
+
+.exampapers-page-section .woocommerce ul.products,
+.exampapers-page-section .wc-block-grid__products {
+	margin-bottom: 0;
+}
+
+.exampapers-section-inner--narrow {
+	max-width: 900px;
+}
+
+.exampapers-card,
+.wp-block-group.exampapers-card {
+	background: var(--exampapers-paper);
+	border: 1px solid var(--exampapers-line);
+	border-radius: 8px;
+	box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+	padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.exampapers-hero {
+	background:
+		linear-gradient(135deg, rgba(23, 37, 84, 0.96), rgba(8, 145, 178, 0.9)),
+		linear-gradient(45deg, rgba(255, 255, 255, 0.08) 25%, transparent 25% 75%, rgba(255, 255, 255, 0.08) 75%);
+	color: #ffffff;
+	padding-block: clamp(3rem, 8vw, 6rem);
+}
+
+.exampapers-hero .exampapers-section-inner {
+	display: grid;
+	gap: 1.25rem;
+}
+
+.exampapers-hero h1 {
+	color: #ffffff;
+	max-width: 900px;
+}
+
+.exampapers-lede {
+	font-size: clamp(1.1rem, 2vw, 1.35rem);
+	max-width: 760px;
+}
+
+.exampapers-hero a {
+	color: inherit;
+}
+
+.exampapers-muted {
+	color: var(--exampapers-muted);
+}
+
+.exampapers-resource-grid,
+.exampapers-feature-grid {
+	display: grid;
+	gap: clamp(1.25rem, 3vw, 2rem);
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+.exampapers-badge {
+	align-items: center;
+	background: #e0f2fe;
+	border: 1px solid #bae6fd;
+	border-radius: 999px;
+	color: #075985;
+	display: inline-flex;
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 1;
+	padding: 0.45rem 0.7rem;
+	width: fit-content;
+}
+
+.exampapers-badge--green {
+	background: #dcfce7;
+	border-color: #bbf7d0;
+	color: #166534;
+}
+
+.exampapers-badge--cyan {
+	background: #cffafe;
+	border-color: #a5f3fc;
+	color: #155e75;
+}
+
+.exampapers-search-panel {
+	background: #ffffff;
+	border: 1px solid rgba(255, 255, 255, 0.74);
+	border-radius: 12px;
+	box-shadow: 0 22px 50px rgba(15, 23, 42, 0.22);
+	color: var(--exampapers-ink);
+	display: grid;
+	gap: 0.85rem;
+	margin-top: 2rem;
+	max-width: 920px;
+	padding: clamp(1rem, 2.2vw, 1.35rem);
+}
+
+.exampapers-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+}
+
+.exampapers-actions a {
+	text-decoration: none;
+}
+
+.exampapers-search-panel label {
+	color: var(--exampapers-navy);
+	font-size: 0.95rem;
+	font-weight: 900;
+	line-height: 1.2;
+}
+
+.exampapers-search-panel__row {
+	align-items: stretch;
+	display: grid;
+	gap: 0.75rem;
+	grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.exampapers-search-panel input[type="search"] {
+	background: #f8fafc;
+	border: 1px solid #cbd5e1;
+	border-radius: 8px;
+	color: var(--exampapers-ink);
+	font-size: 1rem;
+	min-height: 3.25rem;
+	padding: 0.9rem 1rem;
+	width: 100%;
+}
+
+.exampapers-search-panel input[type="search"]::placeholder {
+	color: #64748b;
+	opacity: 1;
+}
+
+.exampapers-search-panel input[type="search"]:focus {
+	background: #ffffff;
+	border-color: var(--exampapers-blue);
+	outline: 3px solid rgba(37, 99, 235, 0.18);
+	outline-offset: 0;
+}
+
+.exampapers-search-panel button {
+	align-items: center;
+	background: var(--exampapers-blue);
+	border: 1px solid var(--exampapers-blue);
+	border-radius: 8px;
+	color: #ffffff;
+	display: inline-flex;
+	font-size: 1rem;
+	font-weight: 900;
+	justify-content: center;
+	min-height: 3.25rem;
+	padding: 0.9rem 1.35rem;
+	white-space: nowrap;
+}
+
+.exampapers-search-panel button:hover,
+.exampapers-search-panel button:focus,
+.exampapers-search-panel button:active {
+	background: var(--exampapers-blue);
+	border-color: var(--exampapers-blue);
+	color: #ffffff;
+	filter: none;
+	transform: none;
+}
+
+input,
+select,
+textarea {
+	border: 1px solid var(--exampapers-line);
+	border-radius: 6px;
+	color: var(--exampapers-ink);
+	padding: 0.7rem 0.85rem;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+	border-color: var(--exampapers-blue);
+	outline: 2px solid rgba(37, 99, 235, 0.22);
+	outline-offset: 1px;
+}
+
+.exampapers-link-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
+
+.exampapers-link-list a {
+	background: #ffffff;
+	border: 1px solid var(--exampapers-line);
+	border-radius: 999px;
+	color: var(--exampapers-navy);
+	font-weight: 700;
+	padding: 0.45rem 0.75rem;
+	text-decoration: none;
+}
+
+.exampapers-faq-list details,
+.exampapers-product-sections details {
+	border-top: 1px solid var(--exampapers-line);
+	padding: 0.85rem 0;
+}
+
+.exampapers-faq-list summary,
+.exampapers-product-sections summary {
+	cursor: pointer;
+	font-weight: 800;
+}
+
+.exampapers-footer {
+	background: var(--exampapers-navy);
+	color: #ffffff;
+	margin-top: clamp(3rem, 6vw, 5rem);
+	padding-block: clamp(2rem, 5vw, 4rem);
+}
+
+.exampapers-footer__inner {
+	display: grid;
+	gap: 1.5rem;
+	grid-template-columns: 1.4fr 1fr 1fr;
+}
+
+.exampapers-footer h3 {
+	color: #ffffff;
+}
+
+.exampapers-footer a {
+	color: #ffffff;
+}
+
+.exampapers-footer ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.exampapers-footer li + li {
+	margin-top: 0.4rem;
+}
+
+@media (max-width: 782px) {
+	.admin-bar .exampapers-header {
+		top: 46px;
+	}
+
+	.exampapers-search-panel {
+		grid-template-columns: 1fr;
+	}
+
+	.exampapers-search-panel__row {
+		grid-template-columns: 1fr;
+	}
+
+	.exampapers-search-panel button {
+		width: 100%;
+	}
+
+	.exampapers-header__inner,
+	.exampapers-footer__inner {
+		grid-template-columns: 1fr;
+	}
+
+	.exampapers-header__inner {
+		align-items: center;
+		flex-wrap: wrap;
+		flex-direction: row;
+	}
+
+	.exampapers-nav-toggle {
+		display: flex;
+	}
+
+	.exampapers-main-nav {
+		display: none;
+		flex-basis: 100%;
+		flex-direction: column;
+		align-items: flex-start;
+		border-top: 1px solid var(--exampapers-line);
+		gap: 0;
+		padding-block: 0.75rem;
+	}
+
+	.exampapers-main-nav > a {
+		padding: 0.5rem 0;
+		width: 100%;
+	}
+
+	.exampapers-header--open .exampapers-main-nav {
+		display: flex;
+	}
+
+	.exampapers-header--open .exampapers-nav-toggle span:nth-child(1) {
+		transform: translateY(7px) rotate(45deg);
+	}
+
+	.exampapers-header--open .exampapers-nav-toggle span:nth-child(2) {
+		opacity: 0;
+	}
+
+	.exampapers-header--open .exampapers-nav-toggle span:nth-child(3) {
+		transform: translateY(-7px) rotate(-45deg);
+	}
+
+	.exampapers-footer__inner {
+		display: grid;
+	}
+}
+
+@media (max-width: 700px) {
+	.exampapers-page-section {
+		padding-block: 2.5rem 3.5rem;
+	}
+
+	.exampapers-section-white {
+		padding-bottom: 4rem;
+	}
+
+	.exampapers-page-section .exampapers-section-inner {
+		gap: 1.35rem;
+	}
+
+	.exampapers-card,
+	.wp-block-group.exampapers-card,
+	.exampapers-search-panel {
+		padding: 1rem;
+	}
+}
+
+.single-product .exampapers-badge {
+	font-size: 1rem;
+}

@@ -1,0 +1,10 @@
+.editor-styles-wrapper .exampapers-card {
+	border: 1px solid #d9e2ef;
+	border-radius: 8px;
+	padding: 1rem;
+}
+
+.editor-styles-wrapper .exampapers-hero {
+	background: #172554;
+	color: #ffffff;
+}
