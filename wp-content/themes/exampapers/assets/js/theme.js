@@ -43,6 +43,71 @@
 		});
 	});
 
+	document.querySelectorAll('[data-exampapers-autocomplete]').forEach(function (autocomplete) {
+		var input = autocomplete.querySelector('input[type="search"]');
+		var suggestions = autocomplete.querySelector('.exampapers-search-suggestions');
+
+		if (!input || !suggestions) {
+			return;
+		}
+
+		var buttons = Array.prototype.slice.call(suggestions.querySelectorAll('[data-suggestion]'));
+
+		function closeSuggestions() {
+			suggestions.hidden = true;
+			input.setAttribute('aria-expanded', 'false');
+		}
+
+		function openSuggestions() {
+			suggestions.hidden = false;
+			input.setAttribute('aria-expanded', 'true');
+		}
+
+		function updateSuggestions() {
+			var query = input.value.trim().toLowerCase();
+			var visibleCount = 0;
+
+			buttons.forEach(function (button) {
+				var value = button.getAttribute('data-suggestion') || '';
+				var isVisible = !query || value.toLowerCase().indexOf(query) !== -1;
+
+				button.parentElement.hidden = !isVisible;
+
+				if (isVisible) {
+					visibleCount += 1;
+				}
+			});
+
+			if (visibleCount) {
+				openSuggestions();
+			} else {
+				closeSuggestions();
+			}
+		}
+
+		input.addEventListener('input', updateSuggestions);
+		input.addEventListener('focus', updateSuggestions);
+		input.addEventListener('keydown', function (event) {
+			if (event.key === 'Escape') {
+				closeSuggestions();
+			}
+		});
+
+		buttons.forEach(function (button) {
+			button.addEventListener('click', function () {
+				input.value = button.getAttribute('data-suggestion') || button.textContent.trim();
+				closeSuggestions();
+				input.focus();
+			});
+		});
+
+		document.addEventListener('click', function (event) {
+			if (!autocomplete.contains(event.target)) {
+				closeSuggestions();
+			}
+		});
+	});
+
 	function getProductId(button) {
 		if (!button) {
 			return '';

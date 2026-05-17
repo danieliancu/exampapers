@@ -44,14 +44,16 @@ sort( $search_suggestions, SORT_NATURAL | SORT_FLAG_CASE );
 		<form class="exampapers-search-panel" role="search" method="get" action="<?php echo esc_url( function_exists( 'wc_get_page_id' ) ? get_permalink( wc_get_page_id( 'shop' ) ) : home_url( '/shop/' ) ); ?>" autocomplete="off">
 			<label for="exampapers-home-search"><?php esc_html_e( 'Search by school, exam area or subject', 'exampapers' ); ?></label>
 			<div class="exampapers-search-panel__row">
-				<input id="exampapers-home-search" type="search" name="s" list="exampapers-home-search-suggestions" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="<?php esc_attr_e( 'e.g. CSSE, Kent Test, English, Tiffin', 'exampapers' ); ?>">
-				<?php if ( ! empty( $search_suggestions ) ) : ?>
-					<datalist id="exampapers-home-search-suggestions">
-						<?php foreach ( $search_suggestions as $suggestion ) : ?>
-							<option value="<?php echo esc_attr( $suggestion ); ?>"></option>
-						<?php endforeach; ?>
-					</datalist>
-				<?php endif; ?>
+				<div class="exampapers-search-autocomplete" data-exampapers-autocomplete>
+					<input id="exampapers-home-search" type="search" name="s" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="<?php esc_attr_e( 'e.g. CSSE, Kent Test, English, Tiffin', 'exampapers' ); ?>" aria-autocomplete="list" aria-controls="exampapers-home-search-suggestions" aria-expanded="false">
+					<?php if ( ! empty( $search_suggestions ) ) : ?>
+						<ul id="exampapers-home-search-suggestions" class="exampapers-search-suggestions" hidden>
+							<?php foreach ( $search_suggestions as $suggestion ) : ?>
+								<li><button type="button" data-suggestion="<?php echo esc_attr( $suggestion ); ?>"><?php echo esc_html( $suggestion ); ?></button></li>
+							<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
+				</div>
 				<input type="hidden" name="post_type" value="product">
 				<button type="submit"><?php esc_html_e( 'Search papers', 'exampapers' ); ?></button>
 			</div>

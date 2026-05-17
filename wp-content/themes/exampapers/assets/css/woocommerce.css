@@ -5,6 +5,23 @@
 	max-width: 1240px;
 }
 
+.wc-block-store-notices:empty,
+.wp-block-woocommerce-store-notices:empty,
+.wc-block-store-notices:has(> .woocommerce-notices-wrapper:empty),
+.wp-block-woocommerce-store-notices:has(> .woocommerce-notices-wrapper:empty) {
+	display: none;
+}
+
+.woocommerce-cart main,
+.woocommerce-account main {
+	padding: 0 20px;
+}
+
+.woocommerce-cart h1,
+.woocommerce-account h1 {
+	font-size: 42px;
+}
+
 .exampapers-shop-header {
 	display: grid;
 	gap: 1rem;
@@ -21,6 +38,26 @@
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
+}
+
+.exampapers-shop-results .woocommerce-result-count {
+	align-self: flex-start;
+	margin: 0 0 1rem;
+	order: 0;
+}
+
+.exampapers-shop-results .woocommerce-ordering {
+	align-self: flex-end;
+	margin: -2.9rem 0 1rem;
+	order: 0;
+}
+
+.exampapers-shop-results .woocommerce-ordering select {
+	min-height: 2.5rem;
+}
+
+.exampapers-shop-results ul.products {
+	order: 10;
 }
 
 .exampapers-shop-results .woocommerce-pagination,
@@ -403,6 +440,20 @@ ul.products li.product,
 	pointer-events: none;
 }
 
+.woocommerce-cart .wc-proceed-to-checkout a.checkout-button:hover,
+.woocommerce-cart .wc-proceed-to-checkout a.checkout-button:focus,
+.woocommerce-cart .wc-proceed-to-checkout a.checkout-button:active,
+.wc-block-cart__submit-button:hover,
+.wc-block-cart__submit-button:focus,
+.wc-block-cart__submit-button:active {
+	background: var(--exampapers-blue);
+	border-color: var(--exampapers-blue);
+	color: #ffffff;
+	filter: none;
+	transform: none;
+	box-shadow: none;
+}
+
 .exampapers-fixed-quantity {
 	color: var(--exampapers-muted);
 	display: inline-flex;
@@ -477,6 +528,10 @@ ul.products li.product,
 	margin-top: 0;
 }
 
+.exampapers-product-faq-card {
+	grid-column: 1 / -1;
+}
+
 .exampapers-disclaimer,
 .exampapers-archive-seo {
 	background: #fff7ed;
@@ -503,6 +558,26 @@ ul.products li.product,
 .woocommerce-cart .wc-block-cart__empty-cart__title::before,
 .woocommerce-cart .wc-empty-cart-message::before {
 	display: none;
+}
+
+.woocommerce-cart .wp-block-woocommerce-empty-cart-block > :not(.wc-block-cart__empty-cart__title) {
+	display: none !important;
+}
+
+.woocommerce-cart .wc-block-cart__empty-cart__title {
+	color: transparent;
+	font-size: 0;
+	margin: 2rem auto;
+	text-align: center;
+}
+
+.woocommerce-cart .wc-block-cart__empty-cart__title::after {
+	color: var(--exampapers-ink);
+	content: "No products have been added yet.";
+	display: block;
+	font-size: 1.2rem;
+	font-weight: 800;
+	line-height: 1.4;
 }
 
 .woocommerce-account .woocommerce {
@@ -649,7 +724,8 @@ ul.products li.product,
 .woocommerce-account .woocommerce-MyAccount-content .woocommerce-MyAccount-navigation,
 .woocommerce-account .woocommerce-MyAccount-content .woocommerce-MyAccount-dashboard-links,
 .woocommerce-account .woocommerce-MyAccount-content .dashboard-links,
-.woocommerce-account .woocommerce-MyAccount-content .account-dashboard-links {
+.woocommerce-account .woocommerce-MyAccount-content .account-dashboard-links,
+.woocommerce-account .woocommerce-MyAccount-content .exampapers-account-dashboard-links {
 	display: grid;
 	gap: 1rem;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -659,21 +735,39 @@ ul.products li.product,
 .woocommerce-account .woocommerce-MyAccount-content .woocommerce-MyAccount-navigation a,
 .woocommerce-account .woocommerce-MyAccount-content .woocommerce-MyAccount-dashboard-links a,
 .woocommerce-account .woocommerce-MyAccount-content .dashboard-links a,
-.woocommerce-account .woocommerce-MyAccount-content .account-dashboard-links a {
+.woocommerce-account .woocommerce-MyAccount-content .account-dashboard-links a,
+.woocommerce-account .woocommerce-MyAccount-content .exampapers-account-dashboard-links a {
 	align-items: center;
 	background: #ffffff;
 	border: 1px solid #e7e9ec;
+	border-radius: 8px;
 	box-shadow: 0 1px 5px rgba(15, 23, 42, 0.08);
 	color: #001329;
 	display: flex;
 	flex-direction: column;
-	font-weight: 650;
-	gap: 0.65rem;
+	font-size: 1rem;
+	font-weight: 800;
+	gap: 0.85rem;
 	justify-content: center;
-	min-height: 6.4rem;
+	min-height: 8.5rem;
 	padding: 1rem;
 	text-align: center;
 	text-decoration: none;
+}
+
+.woocommerce-account .woocommerce-MyAccount-content .exampapers-account-dashboard-links a:hover,
+.woocommerce-account .woocommerce-MyAccount-content .exampapers-account-dashboard-links a:focus {
+	background: #f8fafc;
+	border-color: #cbd5e1;
+	color: #001329;
+}
+
+.woocommerce-account .woocommerce-MyAccount-content .exampapers-account-dashboard-links .dashicons {
+	color: var(--exampapers-blue);
+	font-size: 2.6rem;
+	height: 2.6rem;
+	line-height: 1;
+	width: 2.6rem;
 }
 
 .woocommerce-account table.shop_table,
@@ -731,17 +825,19 @@ ul.products li.product,
 	.woocommerce-account .woocommerce-MyAccount-content .woocommerce-MyAccount-navigation,
 	.woocommerce-account .woocommerce-MyAccount-content .woocommerce-MyAccount-dashboard-links,
 	.woocommerce-account .woocommerce-MyAccount-content .dashboard-links,
-	.woocommerce-account .woocommerce-MyAccount-content .account-dashboard-links {
+	.woocommerce-account .woocommerce-MyAccount-content .account-dashboard-links,
+	.woocommerce-account .woocommerce-MyAccount-content .exampapers-account-dashboard-links {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }
 
-@media (min-width: 1068px) {
-	.post-type-archive-product .woocommerce ul.products,
-	.post-type-archive-product.woocommerce-page ul.products,
-	.post-type-archive-product .wc-block-grid__products,
-	.post-type-archive-product .wp-block-woocommerce-product-template {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+@media (min-width: 641px) {
+	.exampapers-shop-layout .woocommerce ul.products,
+	.exampapers-shop-layout .woocommerce-page ul.products,
+	.exampapers-shop-layout .wc-block-grid__products,
+	.exampapers-shop-layout .wp-block-woocommerce-product-template,
+	.exampapers-shop-results ul.products {
+		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 	}
 }
 
@@ -749,6 +845,16 @@ ul.products li.product,
 	.exampapers-shop-shell,
 	.exampapers-product-shell {
 		padding-inline: 1rem;
+	}
+
+	.exampapers-shop-results .woocommerce-result-count,
+	.exampapers-shop-results .woocommerce-ordering {
+		align-self: stretch;
+		margin: 0 0 1rem;
+	}
+
+	.exampapers-shop-results .woocommerce-ordering select {
+		width: 100%;
 	}
 
 	.woocommerce ul.products,
@@ -777,7 +883,8 @@ ul.products li.product,
 	.woocommerce-account .woocommerce-MyAccount-content .woocommerce-MyAccount-navigation,
 	.woocommerce-account .woocommerce-MyAccount-content .woocommerce-MyAccount-dashboard-links,
 	.woocommerce-account .woocommerce-MyAccount-content .dashboard-links,
-	.woocommerce-account .woocommerce-MyAccount-content .account-dashboard-links {
+	.woocommerce-account .woocommerce-MyAccount-content .account-dashboard-links,
+	.woocommerce-account .woocommerce-MyAccount-content .exampapers-account-dashboard-links {
 		grid-template-columns: 1fr;
 	}
 }

@@ -154,7 +154,7 @@ function exampapers_product_info_sections( $product ) {
 	}
 	echo '</article>';
 
-	echo '<article class="exampapers-card"><h2>' . esc_html__( 'FAQ', 'exampapers' ) . '</h2>';
+	echo '<article class="exampapers-card exampapers-product-faq-card"><h2>' . esc_html__( 'FAQ', 'exampapers' ) . '</h2>';
 	echo '<details><summary>' . esc_html__( 'Is this a physical product?', 'exampapers' ) . '</summary><p>' . esc_html__( 'No. Products are intended to be virtual, downloadable PDF resources unless stated otherwise.', 'exampapers' ) . '</p></details>';
 	echo '<details><summary>' . esc_html__( 'Are answers included?', 'exampapers' ) . '</summary><p>' . esc_html__( 'Answer files should be included with each paid pack where noted in the product data.', 'exampapers' ) . '</p></details>';
 	echo '</article>';

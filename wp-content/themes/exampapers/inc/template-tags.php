@@ -141,11 +141,44 @@ function exampapers_site_header() {
 				<a href="<?php echo esc_url( home_url( '/product-category/11-plus/' ) ); ?>"><?php esc_html_e( '11+ Areas', 'exampapers' ); ?></a>
 				<a href="<?php echo esc_url( home_url( '/product-category/free-samples/' ) ); ?>"><?php esc_html_e( 'Free Samples', 'exampapers' ); ?></a>
 				<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>"><?php esc_html_e( 'Parent Guide', 'exampapers' ); ?></a>
+			</nav>
+
+			<div class="exampapers-header-actions">
 				<?php exampapers_account_link(); ?>
 				<?php exampapers_cart_link(); ?>
-			</nav>
+			</div>
 		</div>
 	</header>
+	<?php
+}
+
+/**
+ * Render the complete site footer.
+ */
+function exampapers_site_footer() {
+	?>
+	<footer class="exampapers-footer">
+		<div class="exampapers-footer__inner">
+			<section>
+				<h3><?php esc_html_e( 'Exampapers', 'exampapers' ); ?></h3>
+				<p><?php esc_html_e( 'Downloadable exam practice papers for UK school entrance preparation.', 'exampapers' ); ?></p>
+			</section>
+
+			<section>
+				<h3><?php esc_html_e( 'Shop', 'exampapers' ); ?></h3>
+				<ul>
+					<li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"><?php esc_html_e( 'All papers', 'exampapers' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/product-category/free-samples/' ) ); ?>"><?php esc_html_e( 'Free samples', 'exampapers' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/cart/' ) ); ?>"><?php esc_html_e( 'Cart', 'exampapers' ); ?></a></li>
+				</ul>
+			</section>
+
+			<section>
+				<h3><?php esc_html_e( 'Guidance', 'exampapers' ); ?></h3>
+				<p><?php esc_html_e( 'Always check current admission guidance from your exam area, school or local authority before preparing.', 'exampapers' ); ?></p>
+			</section>
+		</div>
+	</footer>
 	<?php
 }
 
@@ -167,3 +200,22 @@ function exampapers_replace_header_template_part( $block_content, $block ) {
 	return ob_get_clean();
 }
 add_filter( 'render_block_core/template-part', 'exampapers_replace_header_template_part', 10, 2 );
+
+/**
+ * Replace inherited block-theme footer template parts with the PHP footer.
+ *
+ * @param string $block_content Rendered block content.
+ * @param array  $block Parsed block.
+ * @return string
+ */
+function exampapers_replace_footer_template_part( $block_content, $block ) {
+	if ( empty( $block['attrs']['slug'] ) || 'footer' !== $block['attrs']['slug'] ) {
+		return $block_content;
+	}
+
+	ob_start();
+	exampapers_site_footer();
+
+	return ob_get_clean();
+}
+add_filter( 'render_block_core/template-part', 'exampapers_replace_footer_template_part', 10, 2 );
