@@ -14,6 +14,13 @@ if ( ! $config ) {
 	return;
 }
 
+$area_schools = function_exists( 'exampapers_get_exam_area_schools' ) && ! empty( $config['exam_area'] )
+	? exampapers_get_exam_area_schools( $config['exam_area'] )
+	: array(
+		'schools' => array(),
+		'sources' => array(),
+	);
+
 get_header();
 ?>
 
@@ -46,10 +53,10 @@ get_header();
 		</section>
 
 		<div class="exampapers-landing-info-grid">
-			<?php if ( ! empty( $config['for'] ) ) : ?>
+			<?php if ( ! empty( $config['what_for'] ) ) : ?>
 				<section class="exampapers-card">
 					<h2><?php esc_html_e( 'What this page is for', 'exampapers' ); ?></h2>
-					<p><?php echo esc_html( $config['for'] ); ?></p>
+					<p><?php echo esc_html( $config['what_for'] ); ?></p>
 				</section>
 			<?php endif; ?>
 
@@ -60,6 +67,37 @@ get_header();
 				</section>
 			<?php endif; ?>
 		</div>
+
+		<?php if ( ! empty( $area_schools['schools'] ) && is_array( $area_schools['schools'] ) ) : ?>
+			<section class="exampapers-landing-links" aria-labelledby="exampapers-landing-schools-title">
+				<h2 id="exampapers-landing-schools-title"><?php esc_html_e( 'Schools commonly associated with this exam area', 'exampapers' ); ?></h2>
+				<div class="exampapers-link-list">
+					<?php foreach ( $area_schools['schools'] as $school ) : ?>
+						<?php if ( ! $school instanceof WP_Term ) : ?>
+							<?php continue; ?>
+						<?php endif; ?>
+						<a href="<?php echo esc_url( exampapers_school_shop_filter_url( $school ) ); ?>"><?php echo esc_html( $school->name ); ?></a>
+					<?php endforeach; ?>
+				</div>
+
+				<?php if ( ! empty( $area_schools['sources'] ) && is_array( $area_schools['sources'] ) ) : ?>
+					<p class="exampapers-muted">
+						<?php esc_html_e( 'Sources:', 'exampapers' ); ?>
+						<?php
+						$source_links = array();
+						foreach ( $area_schools['sources'] as $source ) {
+							if ( empty( $source['label'] ) || empty( $source['url'] ) ) {
+								continue;
+							}
+
+							$source_links[] = '<a href="' . esc_url( $source['url'] ) . '">' . esc_html( $source['label'] ) . '</a>';
+						}
+						echo wp_kses_post( implode( ', ', $source_links ) );
+						?>
+					</p>
+				<?php endif; ?>
+			</section>
+		<?php endif; ?>
 
 		<?php if ( ! empty( $config['faqs'] ) && is_array( $config['faqs'] ) ) : ?>
 			<section class="exampapers-card exampapers-landing-faq" aria-labelledby="exampapers-landing-faq-title">

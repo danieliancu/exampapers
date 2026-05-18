@@ -6,16 +6,32 @@
  *
  * @package Exampapers
  */
+
+$shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' );
+
+$exam_level_url = static function ( $name ) use ( $shop_url ) {
+	if ( ! taxonomy_exists( 'pa_exam-level' ) ) {
+		return $shop_url;
+	}
+
+	$term = get_term_by( 'name', $name, 'pa_exam-level' );
+
+	if ( ! $term instanceof WP_Term ) {
+		return $shop_url;
+	}
+
+	return add_query_arg( 'exam_level', $term->slug, $shop_url );
+};
 ?>
 
 <section class="exampapers-page-section">
 	<div class="exampapers-section-inner">
-		<h2><?php esc_html_e( 'Search papers by exam level', 'exampapers' ); ?></h2>
+		<h2><?php esc_html_e( 'Choose your exam', 'exampapers' ); ?></h2>
+		<p><?php esc_html_e( 'Start with the exam level your child is preparing for.', 'exampapers' ); ?></p>
 		<div class="exampapers-feature-grid">
-			<article class="exampapers-card"><h3>Pre-11+</h3><p>Early preparation and confidence building.</p></article>
-			<article class="exampapers-card"><h3>11+</h3><p>Core mock papers and practice packs.</p></article>
-			<article class="exampapers-card"><h3>13+</h3><p>Future-ready structure for senior school entry.</p></article>
-			<article class="exampapers-card"><h3>SATs &amp; GCSE</h3><p>Prepared for later expansion.</p></article>
+			<a class="exampapers-card exampapers-nav-card exampapers-nav-card--featured" href="<?php echo esc_url( $exam_level_url( '11+' ) ); ?>"><span><?php esc_html_e( '11+', 'exampapers' ); ?></span><small><?php esc_html_e( 'For grammar school entrance preparation, usually taken in Year 6 for Year 7 entry.', 'exampapers' ); ?></small></a>
+			<a class="exampapers-card exampapers-nav-card" href="<?php echo esc_url( $exam_level_url( 'SATs' ) ); ?>"><span><?php esc_html_e( 'SATs', 'exampapers' ); ?></span><small><?php esc_html_e( 'For Year 6 end-of-primary-school practice in reading, maths and related skills.', 'exampapers' ); ?></small></a>
+			<a class="exampapers-card exampapers-nav-card" href="<?php echo esc_url( $exam_level_url( 'GCSE' ) ); ?>"><span><?php esc_html_e( 'GCSE', 'exampapers' ); ?></span><small><?php esc_html_e( 'For secondary school revision and exam practice, commonly taken in Year 11.', 'exampapers' ); ?></small></a>
 		</div>
 	</div>
 </section>

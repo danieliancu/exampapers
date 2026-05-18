@@ -73,6 +73,10 @@ a:focus:not(:focus-visible) {
 	padding-block: 1rem;
 }
 
+.exampapers-section-inner h2 {
+	margin:0;
+}
+
 .exampapers-brand a {
 	color: var(--exampapers-navy);
 	font-size: 1.2rem;
@@ -239,6 +243,41 @@ input[type="submit"] {
 	padding: clamp(1rem, 2vw, 1.5rem);
 }
 
+.exampapers-nav-card {
+	color: var(--exampapers-ink);
+	display: grid;
+	gap: 0.45rem;
+	min-height: 8rem;
+	text-decoration: none;
+}
+
+.exampapers-nav-card:hover,
+.exampapers-nav-card:focus {
+	border-color: var(--exampapers-blue);
+	box-shadow: 0 16px 34px rgba(15, 23, 42, 0.1);
+	color: var(--exampapers-ink);
+	outline: 0;
+}
+
+.exampapers-nav-card span {
+	color: var(--exampapers-navy);
+	font-size: 1.2rem;
+	font-weight: 900;
+	line-height: 1.2;
+}
+
+.exampapers-nav-card small {
+	color: var(--exampapers-muted);
+	font-size: 0.95rem;
+	font-weight: 650;
+	line-height: 1.4;
+}
+
+.exampapers-nav-card--featured {
+	background: #eff6ff;
+	border-color: #bfdbfe;
+}
+
 .exampapers-hero {
 	background:
 		linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.58)),
@@ -379,6 +418,72 @@ input[type="submit"] {
 	display: grid;
 	gap: 0.75rem;
 	grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.exampapers-hero-filters {
+	display: grid;
+	gap: 0.75rem;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	min-width: 0;
+}
+
+.exampapers-hero-filters > div {
+	display: grid;
+	gap: 0.35rem;
+	min-width: 0;
+}
+
+.exampapers-hero-filters label {
+	font-size: 0.82rem;
+}
+
+.exampapers-hero-filters select {
+	background: #f8fafc;
+	border: 1px solid #cbd5e1;
+	border-radius: 8px;
+	color: var(--exampapers-ink);
+	font-size: 0.95rem;
+	min-height: 3.25rem;
+	width: 100%;
+}
+
+.exampapers-hero-filters select:focus {
+	background: #ffffff;
+	border-color: var(--exampapers-blue);
+	outline: 3px solid rgba(37, 99, 235, 0.18);
+	outline-offset: 0;
+}
+
+.exampapers-area-schools {
+	color: var(--exampapers-muted);
+	font-size: 0.78rem;
+	line-height: 1.45;
+}
+
+.exampapers-area-schools__title {
+	color: var(--exampapers-navy);
+	display: block;
+	font-weight: 800;
+	margin-bottom: 0.15rem;
+}
+
+.exampapers-area-schools ul {
+	display: grid;
+	gap: 0.2rem;
+	list-style: disc;
+	margin: 0;
+	padding-left: 1.1rem;
+}
+
+.exampapers-area-schools a {
+	color: var(--exampapers-blue);
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.exampapers-area-schools a:hover,
+.exampapers-area-schools a:focus {
+	text-decoration: underline;
 }
 
 .exampapers-search-autocomplete {
@@ -605,6 +710,10 @@ textarea:focus {
 	}
 
 	.exampapers-search-panel__row {
+		grid-template-columns: 1fr;
+	}
+
+	.exampapers-hero-filters {
 		grid-template-columns: 1fr;
 	}
 

@@ -33,7 +33,20 @@ function exampapers_landing_meta_keys() {
 		'subject'          => '_exampapers_target_subject',
 		'format'           => '_exampapers_target_format',
 		'difficulty'       => '_exampapers_target_difficulty',
+		'school'           => '_exampapers_target_school',
 		'product_limit'    => '_exampapers_product_limit',
+	);
+}
+
+/**
+ * Term meta keys used for Exam Area to School relationships.
+ *
+ * @return array<string,string>
+ */
+function exampapers_area_school_meta_keys() {
+	return array(
+		'school_terms' => '_exampapers_area_school_terms',
+		'sources'      => '_exampapers_area_school_sources',
 	);
 }
 
@@ -220,10 +233,97 @@ function exampapers_get_current_landing_page_config() {
 		'subject'    => $meta['subject'],
 		'format'     => $meta['format'],
 		'difficulty' => $meta['difficulty'],
+		'school'     => $meta['school'],
 		'limit'      => $meta['product_limit'],
 	);
 
 	return $meta;
+}
+
+/**
+ * Get schools associated with an exam area term.
+ *
+ * @param string|string[] $exam_area Exam area name or names.
+ * @return array{schools:array<int,WP_Term>,sources:array<int,array<string,string>>}
+ */
+function exampapers_get_exam_area_schools( $exam_area ) {
+	if ( empty( $exam_area ) || ! taxonomy_exists( 'pa_exam-area' ) || ! taxonomy_exists( 'pa_school' ) ) {
+		return array(
+			'schools' => array(),
+			'sources' => array(),
+		);
+	}
+
+	$areas = is_array( $exam_area ) ? $exam_area : array( $exam_area );
+	$keys  = exampapers_area_school_meta_keys();
+
+	$school_ids = array();
+	$sources    = array();
+
+	foreach ( $areas as $area_name ) {
+		$area_name = trim( (string) $area_name );
+
+		if ( '' === $area_name ) {
+			continue;
+		}
+
+		$area = get_term_by( 'name', $area_name, 'pa_exam-area' );
+
+		if ( ! $area instanceof WP_Term ) {
+			continue;
+		}
+
+		$area_school_ids = get_term_meta( $area->term_id, $keys['school_terms'], true );
+		$area_sources    = get_term_meta( $area->term_id, $keys['sources'], true );
+
+		if ( is_array( $area_school_ids ) ) {
+			$school_ids = array_merge( $school_ids, array_map( 'absint', $area_school_ids ) );
+		}
+
+		if ( is_array( $area_sources ) ) {
+			$sources = array_merge( $sources, $area_sources );
+		}
+	}
+
+	$school_ids = array_values( array_unique( array_filter( $school_ids ) ) );
+
+	if ( empty( $school_ids ) ) {
+		return array(
+			'schools' => array(),
+			'sources' => $sources,
+		);
+	}
+
+	$schools = get_terms(
+		array(
+			'taxonomy'   => 'pa_school',
+			'include'    => $school_ids,
+			'hide_empty' => false,
+			'orderby'    => 'include',
+		)
+	);
+
+	return array(
+		'schools' => is_wp_error( $schools ) ? array() : $schools,
+		'sources' => $sources,
+	);
+}
+
+/**
+ * Build a shop URL filtered by school.
+ *
+ * @param WP_Term $school School term.
+ * @return string
+ */
+function exampapers_school_shop_filter_url( WP_Term $school ) {
+	$shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' );
+
+	return add_query_arg(
+		array(
+			'school' => $school->slug,
+		),
+		$shop_url
+	);
 }
 
 /**
@@ -495,6 +595,7 @@ function exampapers_landing_page_meta_box_callback( $post ) {
 	exampapers_landing_meta_text_input( 'subject', __( 'Subject', 'exampapers' ), $data['subject'] );
 	exampapers_landing_meta_text_input( 'format', __( 'Format', 'exampapers' ), $data['format'] );
 	exampapers_landing_meta_text_input( 'difficulty', __( 'Difficulty', 'exampapers' ), $data['difficulty'] );
+	exampapers_landing_meta_text_input( 'school', __( 'School', 'exampapers' ), $data['school'] );
 	exampapers_landing_meta_text_input( 'product_limit', __( 'Product limit', 'exampapers' ), $data['product_limit'] );
 }
 
@@ -532,7 +633,7 @@ function exampapers_save_landing_page_meta( $post_id ) {
 	update_post_meta( $post_id, $keys['faqs'], exampapers_landing_parse_faq_rows( isset( $input['faqs'] ) ? (string) $input['faqs'] : '' ) );
 	update_post_meta( $post_id, $keys['internal_links'], exampapers_landing_parse_link_rows( isset( $input['internal_links'] ) ? (string) $input['internal_links'] : '' ) );
 
-	foreach ( array( 'exam_level', 'exam_area', 'exam_style', 'subject', 'format', 'difficulty' ) as $name ) {
+	foreach ( array( 'exam_level', 'exam_area', 'exam_style', 'subject', 'format', 'difficulty', 'school' ) as $name ) {
 		update_post_meta( $post_id, $keys[ $name ], exampapers_landing_parse_list_value( isset( $input[ $name ] ) ? (string) $input[ $name ] : '' ) );
 	}
 

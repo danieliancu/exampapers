@@ -265,6 +265,252 @@ function exampapers_enforce_min_search_length() {
 add_action( 'template_redirect', 'exampapers_enforce_min_search_length' );
 
 /**
+ * Get product filter dropdown data for homepage and shop forms.
+ *
+ * @return array<string,mixed>
+ */
+function exampapers_get_product_filter_dropdown_data() {
+	$exam_level_terms = array();
+	$exam_area_terms  = array();
+	$subject_terms    = array();
+	$filter_matches   = array();
+	$area_schools     = array();
+
+	if ( taxonomy_exists( 'pa_exam-level' ) ) {
+		$include = array_filter(
+			array_map(
+				static function ( $term_name ) {
+					$term = get_term_by( 'name', $term_name, 'pa_exam-level' );
+					return $term instanceof WP_Term ? (int) $term->term_id : 0;
+				},
+				array( '11+', 'SATs', 'GCSE' )
+			)
+		);
+
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'pa_exam-level',
+				'hide_empty' => true,
+				'orderby'    => 'include',
+				'include'    => $include,
+			)
+		);
+
+		$exam_level_terms = is_wp_error( $terms ) ? array() : $terms;
+	}
+
+	if ( taxonomy_exists( 'pa_exam-area' ) ) {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'pa_exam-area',
+				'hide_empty' => true,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			)
+		);
+
+		$exam_area_terms = is_wp_error( $terms ) ? array() : $terms;
+
+		foreach ( $exam_area_terms as $area_term ) {
+			if ( ! $area_term instanceof WP_Term || ! function_exists( 'exampapers_get_exam_area_schools' ) ) {
+				continue;
+			}
+
+			$school_data = exampapers_get_exam_area_schools( $area_term->name );
+
+			if ( empty( $school_data['schools'] ) || ! is_array( $school_data['schools'] ) ) {
+				continue;
+			}
+
+			$area_schools[ $area_term->slug ] = array_values(
+				array_filter(
+					array_map(
+						static function ( $school ) {
+							if ( ! $school instanceof WP_Term ) {
+								return null;
+							}
+
+							$url = function_exists( 'exampapers_school_shop_filter_url' ) ? exampapers_school_shop_filter_url( $school ) : get_term_link( $school );
+
+							return array(
+								'name' => $school->name,
+								'url'  => is_wp_error( $url ) ? '' : $url,
+							);
+						},
+						$school_data['schools']
+					)
+				)
+			);
+		}
+	}
+
+	if ( taxonomy_exists( 'pa_subject' ) ) {
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'pa_subject',
+				'hide_empty' => true,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			)
+		);
+
+		$subject_terms = is_wp_error( $terms ) ? array() : $terms;
+	}
+
+	if ( taxonomy_exists( 'pa_exam-level' ) && taxonomy_exists( 'pa_exam-area' ) && taxonomy_exists( 'pa_subject' ) ) {
+		$product_ids = get_posts(
+			array(
+				'post_type'      => 'product',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			)
+		);
+
+		foreach ( $product_ids as $product_id ) {
+			$levels   = wp_get_post_terms( (int) $product_id, 'pa_exam-level', array( 'fields' => 'slugs' ) );
+			$areas    = wp_get_post_terms( (int) $product_id, 'pa_exam-area', array( 'fields' => 'slugs' ) );
+			$subjects = wp_get_post_terms( (int) $product_id, 'pa_subject', array( 'fields' => 'slugs' ) );
+
+			if ( is_wp_error( $levels ) || is_wp_error( $areas ) || is_wp_error( $subjects ) ) {
+				continue;
+			}
+
+			$filter_matches[] = array(
+				'exam_level' => array_values( array_filter( $levels ) ),
+				'exam_area'  => array_values( array_filter( $areas ) ),
+				'subject'    => array_values( array_filter( $subjects ) ),
+			);
+		}
+	}
+
+	$eleven_plus = taxonomy_exists( 'pa_exam-level' ) ? get_term_by( 'name', '11+', 'pa_exam-level' ) : false;
+
+	return array(
+		'exam_levels'              => $exam_level_terms,
+		'exam_areas'               => $exam_area_terms,
+		'subjects'                 => $subject_terms,
+		'matches'                  => $filter_matches,
+		'area_schools'             => $area_schools,
+		'area_required_level_slug' => $eleven_plus instanceof WP_Term ? $eleven_plus->slug : '11',
+	);
+}
+
+/**
+ * Render product filter dropdowns used by the homepage and shop.
+ *
+ * @param string $id_prefix Field ID prefix.
+ * @param array  $selected Selected slugs.
+ * @param bool   $show_area_schools Whether to render the area schools placeholder.
+ */
+function exampapers_render_product_filter_dropdowns( $id_prefix, array $selected = array(), $show_area_schools = false ) {
+	$data = exampapers_get_product_filter_dropdown_data();
+
+	$selected = wp_parse_args(
+		$selected,
+		array(
+			'exam_level' => '',
+			'exam_area'  => '',
+			'subject'    => '',
+		)
+	);
+
+	echo '<script type="application/json" data-exampapers-filter-matches>' . wp_json_encode( $data['matches'] ) . '</script>';
+	if ( $show_area_schools ) {
+		echo '<script type="application/json" data-exampapers-area-schools>' . wp_json_encode( $data['area_schools'] ) . '</script>';
+	}
+
+	echo '<div class="exampapers-hero-filters" data-exampapers-area-required-level="' . esc_attr( $data['area_required_level_slug'] ) . '">';
+
+	echo '<div><label for="' . esc_attr( $id_prefix ) . '-exam-level">' . esc_html__( 'Exam Level', 'exampapers' ) . '</label>';
+	echo '<select id="' . esc_attr( $id_prefix ) . '-exam-level" name="exam_level">';
+	echo '<option value="">' . esc_html__( 'Any level', 'exampapers' ) . '</option>';
+	foreach ( $data['exam_levels'] as $term ) {
+		if ( ! $term instanceof WP_Term ) {
+			continue;
+		}
+		echo '<option value="' . esc_attr( $term->slug ) . '"' . selected( $selected['exam_level'], $term->slug, false ) . '>' . esc_html( $term->name ) . '</option>';
+	}
+	echo '</select></div>';
+
+	echo '<div><label for="' . esc_attr( $id_prefix ) . '-exam-area">' . esc_html__( 'Exam Area', 'exampapers' ) . '</label>';
+	echo '<select id="' . esc_attr( $id_prefix ) . '-exam-area" name="exam_area">';
+	echo '<option value="">' . esc_html__( 'Any area', 'exampapers' ) . '</option>';
+	foreach ( $data['exam_areas'] as $term ) {
+		if ( ! $term instanceof WP_Term ) {
+			continue;
+		}
+		echo '<option value="' . esc_attr( $term->slug ) . '"' . selected( $selected['exam_area'], $term->slug, false ) . '>' . esc_html( $term->name ) . '</option>';
+	}
+	echo '</select>';
+	if ( $show_area_schools ) {
+		echo '<div class="exampapers-area-schools" data-exampapers-area-schools-output hidden></div>';
+	}
+	echo '</div>';
+
+	echo '<div><label for="' . esc_attr( $id_prefix ) . '-subject">' . esc_html__( 'Subject', 'exampapers' ) . '</label>';
+	echo '<select id="' . esc_attr( $id_prefix ) . '-subject" name="subject">';
+	echo '<option value="">' . esc_html__( 'Any subject', 'exampapers' ) . '</option>';
+	foreach ( $data['subjects'] as $term ) {
+		if ( ! $term instanceof WP_Term ) {
+			continue;
+		}
+		echo '<option value="' . esc_attr( $term->slug ) . '"' . selected( $selected['subject'], $term->slug, false ) . '>' . esc_html( $term->name ) . '</option>';
+	}
+	echo '</select></div>';
+
+	echo '</div>';
+}
+
+/**
+ * Apply homepage dropdown filters to the main shop product query.
+ *
+ * @param WC_Query $query WooCommerce product query.
+ */
+function exampapers_apply_shop_dropdown_filters( $query ) {
+	if ( is_admin() || ! function_exists( 'is_shop' ) || ! is_shop() ) {
+		return;
+	}
+
+	$filter_map = array(
+		'exam_level' => 'pa_exam-level',
+		'exam_area'  => 'pa_exam-area',
+		'subject'    => 'pa_subject',
+		'school'     => 'pa_school',
+	);
+
+	$tax_query = (array) $query->get( 'tax_query' );
+
+	foreach ( $filter_map as $param => $taxonomy ) {
+		if ( empty( $_GET[ $param ] ) || ! taxonomy_exists( $taxonomy ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			continue;
+		}
+
+		$term_slug = sanitize_title( wp_unslash( $_GET[ $param ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		if ( '' === $term_slug || ! get_term_by( 'slug', $term_slug, $taxonomy ) ) {
+			continue;
+		}
+
+		$tax_query[] = array(
+			'taxonomy' => $taxonomy,
+			'field'    => 'slug',
+			'terms'    => array( $term_slug ),
+			'operator' => 'IN',
+		);
+	}
+
+	if ( count( $tax_query ) > 1 ) {
+		$tax_query['relation'] = 'AND';
+	}
+
+	if ( ! empty( $tax_query ) ) {
+		$query->set( 'tax_query', $tax_query );
+	}
+}
+add_action( 'woocommerce_product_query', 'exampapers_apply_shop_dropdown_filters' );
+
+/**
  * Render archive filters from WooCommerce attribute archives.
  */
 function exampapers_archive_filters() {
@@ -272,63 +518,22 @@ function exampapers_archive_filters() {
 		return;
 	}
 
-	$filters = array(
-		'pa_exam-level' => __( 'Exam Level', 'exampapers' ),
-		'pa_exam-area'  => __( 'Exam Area', 'exampapers' ),
-		'pa_exam-style' => __( 'Exam Style', 'exampapers' ),
-		'pa_subject'    => __( 'Subject', 'exampapers' ),
-		'pa_format'     => __( 'Format', 'exampapers' ),
-		'pa_difficulty' => __( 'Difficulty', 'exampapers' ),
-		'pa_school'     => __( 'School', 'exampapers' ),
-	);
-
 	echo '<button class="exampapers-filter-toggle" type="button" aria-expanded="false" aria-controls="exampapers-shop-filters">' . esc_html__( 'Filters', 'exampapers' ) . '</button>';
 	echo '<aside id="exampapers-shop-filters" class="exampapers-shop-filters" aria-label="' . esc_attr__( 'Product filters', 'exampapers' ) . '">';
-	echo '<form role="search" method="get" action="' . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '" class="exampapers-product-search">';
-	echo '<label for="exampapers-product-search">' . esc_html__( 'Search papers', 'exampapers' ) . '</label>';
-	echo '<input id="exampapers-product-search" type="search" name="s" minlength="3" value="' . esc_attr( get_search_query() ) . '" placeholder="' . esc_attr__( 'School, area or subject', 'exampapers' ) . '" aria-describedby="exampapers-search-hint">';
-	echo '<span id="exampapers-search-hint" class="screen-reader-text">' . esc_html__( 'Enter at least 3 characters', 'exampapers' ) . '</span>';
-	echo '<input type="hidden" name="post_type" value="product">';
+
+	$selected = array(
+		'exam_level' => isset( $_GET['exam_level'] ) ? sanitize_title( wp_unslash( $_GET['exam_level'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		'exam_area'  => isset( $_GET['exam_area'] ) ? sanitize_title( wp_unslash( $_GET['exam_area'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		'subject'    => isset( $_GET['subject'] ) ? sanitize_title( wp_unslash( $_GET['subject'] ) ) : '', // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	);
+
+	echo '<form role="search" method="get" action="' . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '" class="exampapers-product-search" data-exampapers-dependent-filters>';
+	echo '<label>' . esc_html__( 'Search papers', 'exampapers' ) . '</label>';
+
+	exampapers_render_product_filter_dropdowns( 'exampapers-shop', $selected );
+
 	echo '<button type="submit">' . esc_html__( 'Search', 'exampapers' ) . '</button>';
 	echo '</form>';
-
-	foreach ( $filters as $taxonomy => $label ) {
-		if ( ! taxonomy_exists( $taxonomy ) ) {
-			continue;
-		}
-
-		$terms = get_terms(
-			array(
-				'taxonomy'   => $taxonomy,
-				'hide_empty' => true,
-				'number'     => 12,
-			)
-		);
-
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			continue;
-		}
-
-		echo '<section class="exampapers-filter-group"><h2>' . esc_html( $label ) . '</h2>';
-
-		foreach ( $terms as $term ) {
-			$link = get_term_link( $term );
-
-			if ( is_wp_error( $link ) ) {
-				continue;
-			}
-
-			$is_current = is_tax( $term->taxonomy, $term->term_id );
-			printf(
-				'<a href="%1$s"%2$s>%3$s</a>',
-				esc_url( $link ),
-				$is_current ? ' aria-current="page"' : '',
-				esc_html( $term->name )
-			);
-		}
-
-		echo '</section>';
-	}
 
 	echo '</aside>';
 }

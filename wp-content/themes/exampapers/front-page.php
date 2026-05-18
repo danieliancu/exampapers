@@ -15,8 +15,6 @@ get_header();
 	get_template_part( 'patterns/homepage-popular-areas' );
 	get_template_part( 'patterns/homepage-subjects' );
 	get_template_part( 'patterns/homepage-best-sellers' );
-	get_template_part( 'patterns/homepage-free-samples' );
-	get_template_part( 'patterns/homepage-parent-guide' );
 	get_template_part( 'patterns/homepage-trust' );
 	get_template_part( 'patterns/homepage-faq' );
 	?>

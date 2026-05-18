@@ -123,6 +123,7 @@ function exampapers_product_info_sections( $product ) {
 	$areas    = exampapers_get_product_attribute_terms( $product, 'exam_area' );
 	$styles   = exampapers_get_product_attribute_terms( $product, 'exam_style' );
 	$formats  = exampapers_get_product_attribute_terms( $product, 'format' );
+	$schools  = exampapers_get_product_attribute_terms( $product, 'school' );
 
 	echo '<section class="exampapers-product-sections" aria-label="' . esc_attr__( 'Product details', 'exampapers' ) . '">';
 
@@ -133,6 +134,14 @@ function exampapers_product_info_sections( $product ) {
 	echo esc_html__( 'Suitable for pupils preparing for', 'exampapers' ) . ' ';
 	echo esc_html( implode( ', ', array_filter( array_merge( $levels, $areas, $styles ) ) ) ?: __( 'school entrance exams', 'exampapers' ) );
 	echo '.</p></article>';
+
+	if ( ! empty( $schools ) ) {
+		echo '<article class="exampapers-card"><h2>' . esc_html__( 'School relevance', 'exampapers' ) . '</h2><ul>';
+		foreach ( $schools as $school ) {
+			echo '<li>' . esc_html( $school ) . '</li>';
+		}
+		echo '</ul></article>';
+	}
 
 	echo '<article class="exampapers-card"><h2>' . esc_html__( 'Skills covered', 'exampapers' ) . '</h2>';
 	if ( ! empty( $subjects ) ) {

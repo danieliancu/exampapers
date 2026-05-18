@@ -145,6 +145,164 @@
 		});
 	});
 
+	document.querySelectorAll('[data-exampapers-dependent-filters]').forEach(function (form) {
+		var data = form.querySelector('[data-exampapers-filter-matches]');
+		var schoolData = form.querySelector('[data-exampapers-area-schools]');
+		var areaSchoolsOutput = form.querySelector('[data-exampapers-area-schools-output]');
+		var filterWrapper = form.querySelector('.exampapers-hero-filters');
+		var selects = Array.prototype.slice.call(form.querySelectorAll('select[name="exam_level"], select[name="exam_area"], select[name="subject"]'));
+		var matches = [];
+		var areaSchools = {};
+		var areaRequiredLevel = filterWrapper ? filterWrapper.getAttribute('data-exampapers-area-required-level') || '' : '';
+
+		if (!data || !selects.length) {
+			return;
+		}
+
+		try {
+			matches = JSON.parse(data.textContent || '[]');
+		} catch (error) {
+			matches = [];
+		}
+
+		if (schoolData) {
+			try {
+				areaSchools = JSON.parse(schoolData.textContent || '{}');
+			} catch (error) {
+				areaSchools = {};
+			}
+		}
+
+		if (!Array.isArray(matches) || !matches.length) {
+			return;
+		}
+
+		function getSelection(exceptName) {
+			var selection = {};
+
+			selects.forEach(function (select) {
+				if (select.name !== exceptName && select.value) {
+					selection[select.name] = select.value;
+				}
+			});
+
+			return selection;
+		}
+
+		function matchIncludes(match, key, value) {
+			return Array.isArray(match[key]) && match[key].indexOf(value) !== -1;
+		}
+
+		function matchesSelection(match, selection) {
+			return Object.keys(selection).every(function (key) {
+				return matchIncludes(match, key, selection[key]);
+			});
+		}
+
+		function isValidOption(select, value) {
+			var selection = getSelection(select.name);
+
+			if (select.name === 'exam_area') {
+				if (areaRequiredLevel && selection.exam_level && selection.exam_level !== areaRequiredLevel) {
+					return false;
+				}
+
+				if (areaRequiredLevel && !selection.exam_level) {
+					return false;
+				}
+			}
+
+			return matches.some(function (match) {
+				return matchesSelection(match, selection) && matchIncludes(match, select.name, value);
+			});
+		}
+
+		function updateAreaSchools() {
+			var areaSelect = form.querySelector('select[name="exam_area"]');
+			var schools;
+
+			if (!areaSchoolsOutput || !areaSelect) {
+				return;
+			}
+
+			schools = areaSelect.value && Array.isArray(areaSchools[areaSelect.value]) ? areaSchools[areaSelect.value] : [];
+
+			areaSchoolsOutput.innerHTML = '';
+
+			if (!schools.length) {
+				areaSchoolsOutput.hidden = true;
+				return;
+			}
+
+			var title = document.createElement('span');
+			var list = document.createElement('ul');
+			title.className = 'exampapers-area-schools__title';
+			title.textContent = '+ Schools';
+			areaSchoolsOutput.appendChild(title);
+
+			schools.forEach(function (school) {
+				if (!school || !school.name || !school.url) {
+					return;
+				}
+
+				var item = document.createElement('li');
+				var link = document.createElement('a');
+				link.href = school.url;
+				link.textContent = school.name;
+				item.appendChild(link);
+				list.appendChild(item);
+			});
+
+			areaSchoolsOutput.appendChild(list);
+			areaSchoolsOutput.hidden = false;
+		}
+
+		function updateSelectOptions() {
+			var changed = false;
+
+			selects.forEach(function (select) {
+				var selectedOptionIsValid = !select.value;
+
+				Array.prototype.slice.call(select.options).forEach(function (option) {
+					var isValid = !option.value || isValidOption(select, option.value);
+
+					option.hidden = !isValid;
+					option.disabled = !isValid;
+
+					if (option.selected && isValid) {
+						selectedOptionIsValid = true;
+					}
+				});
+
+				if (!selectedOptionIsValid) {
+					select.value = '';
+					changed = true;
+				}
+			});
+
+			if (changed) {
+				updateSelectOptions();
+				return;
+			}
+
+			updateAreaSchools();
+		}
+
+		selects.forEach(function (select) {
+			select.addEventListener('change', function () {
+				var areaSelect = form.querySelector('select[name="exam_area"]');
+
+				if (select.name === 'exam_level' && areaSelect && areaRequiredLevel && select.value !== areaRequiredLevel) {
+					areaSelect.value = '';
+				}
+
+				updateSelectOptions();
+			});
+		});
+
+		updateSelectOptions();
+	});
+
 	function getProductId(button) {
 		if (!button) {
 			return '';
