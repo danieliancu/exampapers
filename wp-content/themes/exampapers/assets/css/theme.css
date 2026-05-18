@@ -278,6 +278,19 @@ input[type="submit"] {
 	border-color: #bfdbfe;
 }
 
+.exampapers-card-icon {
+	align-items: center;
+	background: transparent;
+	border-radius: 8px;
+	color: #000000;
+	display: inline-flex;
+	font-size: 2.4rem;
+	height: 3.25rem;
+	justify-content: center;
+	margin: 0 auto 0.9rem;
+	width: 3.25rem;
+}
+
 .exampapers-hero {
 	background:
 		linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.58)),
@@ -404,6 +417,16 @@ input[type="submit"] {
 
 .exampapers-actions a {
 	text-decoration: none;
+}
+
+.exampapers-actions--center {
+	justify-content: center;
+}
+
+.exampapers-actions--center .wp-element-button.is-style-outline:hover,
+.exampapers-actions--center .wp-element-button.is-style-outline:focus {
+	background: transparent;
+	color: inherit;
 }
 
 .exampapers-search-panel label {

@@ -34,7 +34,7 @@ function exampapers_enqueue_styles() {
 		null
 	);
 
-	if ( function_exists( 'is_account_page' ) && is_account_page() ) {
+	if ( is_front_page() || ( function_exists( 'is_account_page' ) && is_account_page() ) ) {
 		wp_enqueue_style( 'dashicons' );
 	}
 

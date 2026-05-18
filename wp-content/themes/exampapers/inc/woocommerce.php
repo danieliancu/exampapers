@@ -276,20 +276,20 @@ function exampapers_get_product_filter_dropdown_data() {
 	$filter_matches   = array();
 	$area_schools     = array();
 
-	if ( taxonomy_exists( 'pa_exam-level' ) ) {
+	if ( taxonomy_exists( 'product_cat' ) ) {
 		$include = array_filter(
 			array_map(
 				static function ( $term_name ) {
-					$term = get_term_by( 'name', $term_name, 'pa_exam-level' );
+					$term = get_term_by( 'name', $term_name, 'product_cat' );
 					return $term instanceof WP_Term ? (int) $term->term_id : 0;
 				},
-				array( '11+', 'SATs', 'GCSE' )
+				array( '11+ Practice Papers', 'SATs Practice Papers', 'GCSE Practice Papers' )
 			)
 		);
 
 		$terms = get_terms(
 			array(
-				'taxonomy'   => 'pa_exam-level',
+				'taxonomy'   => 'product_cat',
 				'hide_empty' => true,
 				'orderby'    => 'include',
 				'include'    => $include,
@@ -299,13 +299,16 @@ function exampapers_get_product_filter_dropdown_data() {
 		$exam_level_terms = is_wp_error( $terms ) ? array() : $terms;
 	}
 
-	if ( taxonomy_exists( 'pa_exam-area' ) ) {
+	if ( taxonomy_exists( 'product_cat' ) ) {
+		$parent_category = get_term_by( 'name', '11+ Practice Papers', 'product_cat' );
+
 		$terms = get_terms(
 			array(
-				'taxonomy'   => 'pa_exam-area',
-				'hide_empty' => true,
+				'taxonomy'   => 'product_cat',
+				'hide_empty' => false,
 				'orderby'    => 'name',
 				'order'      => 'ASC',
+				'parent'     => $parent_category instanceof WP_Term ? (int) $parent_category->term_id : 0,
 			)
 		);
 
@@ -357,7 +360,7 @@ function exampapers_get_product_filter_dropdown_data() {
 		$subject_terms = is_wp_error( $terms ) ? array() : $terms;
 	}
 
-	if ( taxonomy_exists( 'pa_exam-level' ) && taxonomy_exists( 'pa_exam-area' ) && taxonomy_exists( 'pa_subject' ) ) {
+	if ( taxonomy_exists( 'product_cat' ) && taxonomy_exists( 'pa_subject' ) ) {
 		$product_ids = get_posts(
 			array(
 				'post_type'      => 'product',
@@ -368,12 +371,25 @@ function exampapers_get_product_filter_dropdown_data() {
 		);
 
 		foreach ( $product_ids as $product_id ) {
-			$levels   = wp_get_post_terms( (int) $product_id, 'pa_exam-level', array( 'fields' => 'slugs' ) );
-			$areas    = wp_get_post_terms( (int) $product_id, 'pa_exam-area', array( 'fields' => 'slugs' ) );
+			$product_categories = wp_get_post_terms( (int) $product_id, 'product_cat', array( 'fields' => 'all' ) );
+			$levels             = array();
+			$areas              = array();
 			$subjects = wp_get_post_terms( (int) $product_id, 'pa_subject', array( 'fields' => 'slugs' ) );
 
-			if ( is_wp_error( $levels ) || is_wp_error( $areas ) || is_wp_error( $subjects ) ) {
+			if ( is_wp_error( $product_categories ) || is_wp_error( $subjects ) ) {
 				continue;
+			}
+
+			foreach ( $product_categories as $category ) {
+				if ( ! $category instanceof WP_Term ) {
+					continue;
+				}
+
+				if ( 0 === (int) $category->parent ) {
+					$levels[] = $category->slug;
+				} else {
+					$areas[] = $category->slug;
+				}
 			}
 
 			$filter_matches[] = array(
@@ -384,7 +400,7 @@ function exampapers_get_product_filter_dropdown_data() {
 		}
 	}
 
-	$eleven_plus = taxonomy_exists( 'pa_exam-level' ) ? get_term_by( 'name', '11+', 'pa_exam-level' ) : false;
+	$eleven_plus = taxonomy_exists( 'product_cat' ) ? get_term_by( 'name', '11+ Practice Papers', 'product_cat' ) : false;
 
 	return array(
 		'exam_levels'              => $exam_level_terms,
@@ -429,7 +445,12 @@ function exampapers_render_product_filter_dropdowns( $id_prefix, array $selected
 		if ( ! $term instanceof WP_Term ) {
 			continue;
 		}
-		echo '<option value="' . esc_attr( $term->slug ) . '"' . selected( $selected['exam_level'], $term->slug, false ) . '>' . esc_html( $term->name ) . '</option>';
+		$label = array(
+			'11+ Practice Papers'   => '11+',
+			'SATs Practice Papers'  => 'SATs',
+			'GCSE Practice Papers'  => 'GCSE',
+		);
+		echo '<option value="' . esc_attr( $term->slug ) . '"' . selected( $selected['exam_level'], $term->slug, false ) . '>' . esc_html( isset( $label[ $term->name ] ) ? $label[ $term->name ] : $term->name ) . '</option>';
 	}
 	echo '</select></div>';
 
@@ -473,8 +494,8 @@ function exampapers_apply_shop_dropdown_filters( $query ) {
 	}
 
 	$filter_map = array(
-		'exam_level' => 'pa_exam-level',
-		'exam_area'  => 'pa_exam-area',
+		'exam_level' => 'product_cat',
+		'exam_area'  => 'product_cat',
 		'subject'    => 'pa_subject',
 		'school'     => 'pa_school',
 	);

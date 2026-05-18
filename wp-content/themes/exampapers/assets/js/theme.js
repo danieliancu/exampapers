@@ -210,6 +210,10 @@
 				if (areaRequiredLevel && !selection.exam_level) {
 					return false;
 				}
+
+				if (areaRequiredLevel && selection.exam_level === areaRequiredLevel && !selection.subject) {
+					return true;
+				}
 			}
 
 			return matches.some(function (match) {
@@ -261,23 +265,13 @@
 			var changed = false;
 
 			selects.forEach(function (select) {
-				var selectedOptionIsValid = !select.value;
-
 				Array.prototype.slice.call(select.options).forEach(function (option) {
-					var isValid = !option.value || isValidOption(select, option.value);
+					var isSelected = option.selected;
+					var isValid = !option.value || isValidOption(select, option.value) || isSelected;
 
 					option.hidden = !isValid;
 					option.disabled = !isValid;
-
-					if (option.selected && isValid) {
-						selectedOptionIsValid = true;
-					}
 				});
-
-				if (!selectedOptionIsValid) {
-					select.value = '';
-					changed = true;
-				}
 			});
 
 			if (changed) {
