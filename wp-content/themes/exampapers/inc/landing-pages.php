@@ -10,257 +10,183 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Landing page definitions keyed by WordPress page slug.
+ * Post meta keys used by editable landing pages.
  *
- * @return array<string,array<string,mixed>>
+ * @return array<string,string>
  */
-function exampapers_landing_pages_config() {
+function exampapers_landing_meta_keys() {
 	return array(
-		'11-plus-practice-papers'              => array(
-			'h1'               => '11+ Practice Papers',
-			'meta_title'       => '11+ Practice Papers | Downloadable Mock Exam PDFs',
-			'meta_description' => 'Browse printable 11+ practice papers, mock exams and subject packs for UK grammar school and independent school preparation.',
-			'intro'            => 'Browse downloadable 11+ practice papers, mock exam packs and focused subject resources for UK entrance exam preparation.',
-			'query'            => array(
-				'exam_level' => '11+',
-				'limit'      => 8,
-			),
-			'for'              => 'This page is for families comparing 11+ mock exams and printable practice packs before choosing area-specific or subject-specific papers.',
-			'recommended'      => 'Start with a full mock exam pack, then add English, maths or reasoning packs based on the skills your child needs to practise most.',
-			'faqs'             => array(
-				array(
-					'question' => 'Which 11+ paper should I choose first?',
-					'answer'   => 'Start with your target exam area where possible, then use subject packs to strengthen English, maths and reasoning skills.',
-				),
-				array(
-					'question' => 'Are these products downloadable?',
-					'answer'   => 'Yes. Products are set up as virtual downloadable PDF resources through WooCommerce.',
-				),
-				array(
-					'question' => 'Are answers included?',
-					'answer'   => 'Demo products are structured to represent practice packs with answer support where noted in the product data.',
-				),
-			),
-			'links'            => array(
-				'CSSE Essex'  => '/csse-essex-11-plus-practice-papers/',
-				'GL Style'    => '/gl-style-11-plus-practice-papers/',
-				'Sutton SET'  => '/sutton-set-practice-papers/',
-				'Kent Test'   => '/kent-test-practice-papers/',
-				'English'     => '/11-plus-english-practice-papers/',
-				'Maths'       => '/11-plus-maths-practice-papers/',
-				'Free Samples' => '/product-category/free-samples/',
-			),
-		),
-		'csse-essex-11-plus-practice-papers'   => array(
-			'h1'               => 'CSSE Essex 11+ Practice Papers',
-			'meta_title'       => 'CSSE Essex 11+ Practice Papers | English, Maths & Mock Packs',
-			'meta_description' => 'Download CSSE Essex 11+ practice papers for English, maths, vocabulary and full mock exam preparation.',
-			'intro'            => 'Find CSSE Essex 11+ mock papers and focused English, maths, vocabulary and verbal reasoning practice packs.',
-			'query'            => array(
-				'exam_level' => '11+',
-				'exam_area'  => 'CSSE Essex 11+',
-				'limit'      => 8,
-			),
-			'for'              => 'This page is for pupils preparing for CSSE Essex 11+ papers and families looking for targeted printable PDF practice.',
-			'recommended'      => 'Use the full mock exam pack for exam-style practice, then add English, maths or vocabulary packs for focused revision.',
-			'faqs'             => array(
-				array(
-					'question' => 'Which subjects are covered for CSSE Essex?',
-					'answer'   => 'The CSSE Essex demo range covers English, maths, vocabulary and verbal reasoning style preparation.',
-				),
-				array(
-					'question' => 'Should I start with a mock pack or subject pack?',
-					'answer'   => 'A mock pack is useful for exam readiness; subject packs are better when a specific skill needs more practice.',
-				),
-				array(
-					'question' => 'How are the papers delivered?',
-					'answer'   => 'Products are configured as downloadable PDFs available after checkout.',
-				),
-			),
-			'links'            => array(
-				'11+ Practice' => '/11-plus-practice-papers/',
-				'English'     => '/11-plus-english-practice-papers/',
-				'Maths'       => '/11-plus-maths-practice-papers/',
-				'Free Samples' => '/product-category/free-samples/',
-				'Shop'        => '/shop/',
-			),
-		),
-		'gl-style-11-plus-practice-papers'     => array(
-			'h1'               => 'GL Style 11+ Practice Papers',
-			'meta_title'       => 'GL Style 11+ Practice Papers | Printable Mock Exam PDFs',
-			'meta_description' => 'Find GL Style 11+ practice papers covering English, maths, verbal reasoning and non-verbal reasoning.',
-			'intro'            => 'Browse GL Style 11+ practice packs for English, maths, verbal reasoning and non-verbal reasoning preparation.',
-			'query'            => array(
-				'exam_level' => '11+',
-				'exam_style' => 'GL Style',
-				'limit'      => 8,
-			),
-			'for'              => 'This page is for families preparing for GL Style 11+ exams or GL-style regional papers.',
-			'recommended'      => 'Combine a full mock pack with subject packs to cover timing, accuracy and weaker skill areas.',
-			'faqs'             => array(
-				array(
-					'question' => 'What does GL Style cover?',
-					'answer'   => 'GL Style preparation commonly includes English, maths, verbal reasoning and non-verbal reasoning practice.',
-				),
-				array(
-					'question' => 'Can these be used for specific areas?',
-					'answer'   => 'Use area-specific pages where available, and use GL Style packs for broader question-style practice.',
-				),
-				array(
-					'question' => 'Which difficulty should I choose?',
-					'answer'   => 'Start with standard packs, then move to advanced or challenge resources as confidence improves.',
-				),
-			),
-			'links'            => array(
-				'Kent Test'       => '/kent-test-practice-papers/',
-				'Bexley'          => '/product-category/bexley-11/',
-				'Buckinghamshire' => '/product-category/buckinghamshire-11/',
-				'English'         => '/11-plus-english-practice-papers/',
-				'Maths'           => '/11-plus-maths-practice-papers/',
-				'Shop'            => '/shop/',
-			),
-		),
-		'sutton-set-practice-papers'           => array(
-			'h1'               => 'Sutton SET Practice Papers',
-			'meta_title'       => 'Sutton SET Practice Papers | 11+ English & Maths PDFs',
-			'meta_description' => 'Download Sutton SET 11+ practice papers and mock packs for English and maths preparation.',
-			'intro'            => 'Find Sutton SET 11+ English, maths and mock exam practice packs for focused preparation.',
-			'query'            => array(
-				'exam_level' => '11+',
-				'exam_area'  => 'Sutton SET',
-				'limit'      => 8,
-			),
-			'for'              => 'This page is for Sutton SET preparation, especially English and maths practice with exam-style timing.',
-			'recommended'      => 'Use the full mock exam pack to practise pace, then use English or maths packs for targeted improvement.',
-			'faqs'             => array(
-				array(
-					'question' => 'Which subjects matter for Sutton SET?',
-					'answer'   => 'The Sutton SET demo range focuses on English and maths preparation.',
-				),
-				array(
-					'question' => 'Can these help with timing?',
-					'answer'   => 'Mock packs are intended to support timed practice and exam routine building.',
-				),
-				array(
-					'question' => 'Are the papers printable?',
-					'answer'   => 'Products are configured as printable PDF downloads.',
-				),
-			),
-			'links'            => array(
-				'11+ Practice' => '/11-plus-practice-papers/',
-				'English'     => '/11-plus-english-practice-papers/',
-				'Maths'       => '/11-plus-maths-practice-papers/',
-				'Free Samples' => '/product-category/free-samples/',
-				'Shop'        => '/shop/',
-			),
-		),
-		'kent-test-practice-papers'            => array(
-			'h1'               => 'Kent Test Practice Papers',
-			'meta_title'       => 'Kent Test Practice Papers | 11+ Mock Exams & Reasoning Packs',
-			'meta_description' => 'Browse Kent Test 11+ practice papers, reasoning packs and maths packs for focused preparation.',
-			'intro'            => 'Browse Kent Test mock papers, reasoning resources and maths packs for 11+ preparation.',
-			'query'            => array(
-				'exam_level' => '11+',
-				'exam_area'  => 'Kent Test',
-				'limit'      => 8,
-			),
-			'for'              => 'This page is for pupils preparing for the Kent Test and families looking for downloadable practice packs.',
-			'recommended'      => 'Start with the full mock pack, then use reasoning or maths packs to strengthen specific parts of preparation.',
-			'faqs'             => array(
-				array(
-					'question' => 'What skills do Kent Test packs cover?',
-					'answer'   => 'The demo range includes mock exam, reasoning and maths-focused Kent Test practice.',
-				),
-				array(
-					'question' => 'Is Kent Test preparation GL-style?',
-					'answer'   => 'The demo products are tagged with GL Style where relevant for filtering and comparison.',
-				),
-				array(
-					'question' => 'Which pack is best to start with?',
-					'answer'   => 'A full mock pack is useful for a baseline; subject packs are better for targeted practice.',
-				),
-			),
-			'links'            => array(
-				'GL Style'    => '/gl-style-11-plus-practice-papers/',
-				'11+ Practice' => '/11-plus-practice-papers/',
-				'Maths'       => '/11-plus-maths-practice-papers/',
-				'Free Samples' => '/product-category/free-samples/',
-				'Shop'        => '/shop/',
-			),
-		),
-		'11-plus-english-practice-papers'      => array(
-			'h1'               => '11+ English Practice Papers',
-			'meta_title'       => '11+ English Practice Papers | Comprehension & Writing PDFs',
-			'meta_description' => 'Download 11+ English practice papers for comprehension, grammar, punctuation and creative writing preparation.',
-			'intro'            => 'Find 11+ English practice papers for comprehension, grammar, punctuation and creative writing preparation.',
-			'query'            => array(
-				'exam_level' => '11+',
-				'subject'    => array( 'English', 'Comprehension', 'Creative Writing', 'Grammar & Punctuation' ),
-				'limit'      => 8,
-			),
-			'for'              => 'This page is for pupils who need focused 11+ English practice across comprehension, writing and language skills.',
-			'recommended'      => 'Choose an English pack for focused practice, or combine it with an area-specific mock exam pack.',
-			'faqs'             => array(
-				array(
-					'question' => 'Which English skills are covered?',
-					'answer'   => 'Relevant packs may cover comprehension, grammar, punctuation and creative writing skills.',
-				),
-				array(
-					'question' => 'Should I use area-specific English papers?',
-					'answer'   => 'Use area-specific packs where available, especially for CSSE Essex or Sutton SET preparation.',
-				),
-				array(
-					'question' => 'Are answers included?',
-					'answer'   => 'Products are structured to represent downloadable packs with answer support where noted.',
-				),
-			),
-			'links'            => array(
-				'CSSE Essex' => '/csse-essex-11-plus-practice-papers/',
-				'GL Style'   => '/gl-style-11-plus-practice-papers/',
-				'Sutton SET' => '/sutton-set-practice-papers/',
-				'11+ Maths'  => '/11-plus-maths-practice-papers/',
-				'Free Samples' => '/product-category/free-samples/',
-			),
-		),
-		'11-plus-maths-practice-papers'        => array(
-			'h1'               => '11+ Maths Practice Papers',
-			'meta_title'       => '11+ Maths Practice Papers | Printable Problem Solving PDFs',
-			'meta_description' => 'Find printable 11+ maths practice papers and problem-solving packs for UK entrance exam preparation.',
-			'intro'            => 'Browse printable 11+ maths papers and problem-solving packs for entrance exam preparation.',
-			'query'            => array(
-				'exam_level' => '11+',
-				'subject'    => array( 'Maths', 'Problem Solving' ),
-				'limit'      => 8,
-			),
-			'for'              => 'This page is for pupils building 11+ maths fluency, accuracy and problem-solving confidence.',
-			'recommended'      => 'Use maths practice packs for skill-building and full mock packs for timed exam preparation.',
-			'faqs'             => array(
-				array(
-					'question' => 'What maths topics are included?',
-					'answer'   => 'The product tags focus on maths and problem solving; individual product descriptions show the pack focus.',
-				),
-				array(
-					'question' => 'Which difficulty should I start with?',
-					'answer'   => 'Foundation or standard packs are useful early on; advanced packs are better once core skills are secure.',
-				),
-				array(
-					'question' => 'Should maths packs be used with mock exams?',
-					'answer'   => 'Yes. Maths packs help build accuracy, while mock exams help practise timing and exam routine.',
-				),
-			),
-			'links'            => array(
-				'Kent Test'  => '/kent-test-practice-papers/',
-				'GL Style'   => '/gl-style-11-plus-practice-papers/',
-				'Sutton SET' => '/sutton-set-practice-papers/',
-				'11+ English' => '/11-plus-english-practice-papers/',
-				'Free Samples' => '/product-category/free-samples/',
-			),
-		),
+		'is_landing_page'  => '_exampapers_is_landing_page',
+		'meta_title'       => '_exampapers_meta_title',
+		'meta_description' => '_exampapers_meta_description',
+		'intro'            => '_exampapers_intro',
+		'what_for'         => '_exampapers_what_for',
+		'recommended'      => '_exampapers_recommended',
+		'cta_label'        => '_exampapers_cta_label',
+		'cta_url'          => '_exampapers_cta_url',
+		'disclaimer'       => '_exampapers_disclaimer',
+		'faqs'             => '_exampapers_faqs',
+		'internal_links'   => '_exampapers_internal_links',
+		'exam_level'       => '_exampapers_target_exam_level',
+		'exam_area'        => '_exampapers_target_exam_area',
+		'exam_style'       => '_exampapers_target_exam_style',
+		'subject'          => '_exampapers_target_subject',
+		'format'           => '_exampapers_target_format',
+		'difficulty'       => '_exampapers_target_difficulty',
+		'product_limit'    => '_exampapers_product_limit',
 	);
 }
 
 /**
- * Get config for the current published landing page.
+ * Parse a comma-separated admin/meta value.
+ *
+ * @param mixed $value Value.
+ * @return string|string[]
+ */
+function exampapers_landing_parse_list_value( $value ) {
+	if ( is_array( $value ) ) {
+		$items = array_values( array_filter( array_map( 'trim', $value ) ) );
+		return 1 === count( $items ) ? $items[0] : $items;
+	}
+
+	$value = trim( (string) $value );
+
+	if ( '' === $value || false === strpos( $value, ',' ) ) {
+		return $value;
+	}
+
+	$items = array_values( array_filter( array_map( 'trim', explode( ',', $value ) ) ) );
+
+	return 1 === count( $items ) ? $items[0] : $items;
+}
+
+/**
+ * Convert FAQ rows from textarea input to structured meta.
+ *
+ * @param string $value Textarea value.
+ * @return array<int,array<string,string>>
+ */
+function exampapers_landing_parse_faq_rows( $value ) {
+	$rows = array();
+
+	foreach ( preg_split( '/\r\n|\r|\n/', (string) $value ) as $line ) {
+		$line = trim( $line );
+
+		if ( '' === $line || false === strpos( $line, '|' ) ) {
+			continue;
+		}
+
+		list( $question, $answer ) = array_map( 'trim', explode( '|', $line, 2 ) );
+
+		if ( '' !== $question && '' !== $answer ) {
+			$rows[] = array(
+				'question' => sanitize_text_field( $question ),
+				'answer'   => sanitize_textarea_field( $answer ),
+			);
+		}
+	}
+
+	return $rows;
+}
+
+/**
+ * Convert internal-link rows from textarea input to structured meta.
+ *
+ * @param string $value Textarea value.
+ * @return array<int,array<string,string>>
+ */
+function exampapers_landing_parse_link_rows( $value ) {
+	$rows = array();
+
+	foreach ( preg_split( '/\r\n|\r|\n/', (string) $value ) as $line ) {
+		$line = trim( $line );
+
+		if ( '' === $line || false === strpos( $line, '|' ) ) {
+			continue;
+		}
+
+		list( $label, $url ) = array_map( 'trim', explode( '|', $line, 2 ) );
+
+		if ( '' !== $label && '' !== $url ) {
+			$rows[] = array(
+				'label' => sanitize_text_field( $label ),
+				'url'   => esc_url_raw( $url ),
+			);
+		}
+	}
+
+	return $rows;
+}
+
+/**
+ * Format FAQ rows for textarea editing.
+ *
+ * @param mixed $rows Rows.
+ * @return string
+ */
+function exampapers_landing_format_faq_rows( $rows ) {
+	if ( ! is_array( $rows ) ) {
+		return '';
+	}
+
+	$lines = array();
+
+	foreach ( $rows as $row ) {
+		if ( empty( $row['question'] ) || empty( $row['answer'] ) ) {
+			continue;
+		}
+
+		$lines[] = $row['question'] . ' | ' . $row['answer'];
+	}
+
+	return implode( "\n", $lines );
+}
+
+/**
+ * Format link rows for textarea editing.
+ *
+ * @param mixed $rows Rows.
+ * @return string
+ */
+function exampapers_landing_format_link_rows( $rows ) {
+	if ( ! is_array( $rows ) ) {
+		return '';
+	}
+
+	$lines = array();
+
+	foreach ( $rows as $row ) {
+		if ( empty( $row['label'] ) || empty( $row['url'] ) ) {
+			continue;
+		}
+
+		$lines[] = $row['label'] . ' | ' . $row['url'];
+	}
+
+	return implode( "\n", $lines );
+}
+
+/**
+ * Get all landing meta for a page.
+ *
+ * @param int $post_id Post ID.
+ * @return array<string,mixed>
+ */
+function exampapers_get_landing_page_meta( $post_id ) {
+	$keys = exampapers_landing_meta_keys();
+	$data = array();
+
+	foreach ( $keys as $name => $key ) {
+		$data[ $name ] = get_post_meta( $post_id, $key, true );
+	}
+
+	$data['product_limit'] = $data['product_limit'] ? max( 1, (int) $data['product_limit'] ) : 8;
+
+	return $data;
+}
+
+/**
+ * Get landing data for the current published landing page.
  *
  * @return array<string,mixed>|null
  */
@@ -275,20 +201,53 @@ function exampapers_get_current_landing_page_config() {
 		return null;
 	}
 
-	$config = exampapers_landing_pages_config();
-	$slug   = $page->post_name;
+	$keys = exampapers_landing_meta_keys();
 
-	if ( empty( $config[ $slug ] ) ) {
+	if ( '1' !== (string) get_post_meta( $page->ID, $keys['is_landing_page'], true ) ) {
 		return null;
 	}
 
-	$config[ $slug ]['slug'] = $slug;
+	$meta = exampapers_get_landing_page_meta( $page->ID );
 
-	return $config[ $slug ];
+	$meta['post_id']      = $page->ID;
+	$meta['slug']         = $page->post_name;
+	$meta['h1']           = get_the_title( $page );
+	$meta['post_content'] = $page->post_content;
+	$meta['query']        = array(
+		'exam_level' => $meta['exam_level'],
+		'exam_area'  => $meta['exam_area'],
+		'exam_style' => $meta['exam_style'],
+		'subject'    => $meta['subject'],
+		'format'     => $meta['format'],
+		'difficulty' => $meta['difficulty'],
+		'limit'      => $meta['product_limit'],
+	);
+
+	return $meta;
 }
 
 /**
- * Use the landing page template for configured WordPress Pages.
+ * Normalize landing page URLs for output.
+ *
+ * @param string $url URL.
+ * @return string
+ */
+function exampapers_landing_url( $url ) {
+	$url = trim( (string) $url );
+
+	if ( '' === $url ) {
+		return '';
+	}
+
+	if ( preg_match( '#^https?://#i', $url ) ) {
+		return $url;
+	}
+
+	return home_url( $url );
+}
+
+/**
+ * Use the landing page template for landing Pages.
  *
  * @param string $template Template path.
  * @return string
@@ -305,7 +264,7 @@ function exampapers_landing_page_template( $template ) {
 add_filter( 'template_include', 'exampapers_landing_page_template' );
 
 /**
- * Set document title for configured landing pages.
+ * Set document title for landing pages.
  *
  * @param array<string,string> $parts Title parts.
  * @return array<string,string>
@@ -325,7 +284,7 @@ function exampapers_landing_page_title_parts( $parts ) {
 add_filter( 'document_title_parts', 'exampapers_landing_page_title_parts' );
 
 /**
- * Print meta description for configured landing pages.
+ * Print meta description for landing pages.
  */
 function exampapers_landing_page_meta_description() {
 	$config = exampapers_get_current_landing_page_config();
@@ -417,22 +376,6 @@ function exampapers_render_product_grid( array $args = array() ) {
 }
 
 /**
- * Parse a comma-separated shortcode value.
- *
- * @param string $value Shortcode value.
- * @return string|string[]
- */
-function exampapers_landing_shortcode_value( $value ) {
-	$value = trim( (string) $value );
-
-	if ( false === strpos( $value, ',' ) ) {
-		return $value;
-	}
-
-	return array_values( array_filter( array_map( 'trim', explode( ',', $value ) ) ) );
-}
-
-/**
  * Shortcode wrapper for reusable product grids.
  *
  * @param array<string,string> $atts Shortcode attributes.
@@ -461,7 +404,7 @@ function exampapers_products_shortcode( $atts ) {
 
 	foreach ( array( 'exam_level', 'exam_area', 'exam_style', 'subject', 'format', 'difficulty', 'school', 'category' ) as $key ) {
 		if ( '' !== $atts[ $key ] ) {
-			$args[ $key ] = exampapers_landing_shortcode_value( $atts[ $key ] );
+			$args[ $key ] = exampapers_landing_parse_list_value( $atts[ $key ] );
 		}
 	}
 
@@ -470,3 +413,129 @@ function exampapers_products_shortcode( $atts ) {
 	return ob_get_clean();
 }
 add_shortcode( 'exampapers_products', 'exampapers_products_shortcode' );
+
+/**
+ * Add landing page settings meta box.
+ */
+function exampapers_landing_page_meta_box() {
+	add_meta_box(
+		'exampapers-landing-page-settings',
+		__( 'Exampapers Landing Page', 'exampapers' ),
+		'exampapers_landing_page_meta_box_callback',
+		'page',
+		'normal',
+		'high'
+	);
+}
+add_action( 'add_meta_boxes', 'exampapers_landing_page_meta_box' );
+
+/**
+ * Render a text input for landing meta.
+ *
+ * @param string $name Field name.
+ * @param string $label Field label.
+ * @param mixed  $value Field value.
+ */
+function exampapers_landing_meta_text_input( $name, $label, $value ) {
+	if ( is_array( $value ) ) {
+		$value = implode( ', ', $value );
+	}
+
+	echo '<p><label for="exampapers_' . esc_attr( $name ) . '"><strong>' . esc_html( $label ) . '</strong></label>';
+	echo '<input class="widefat" id="exampapers_' . esc_attr( $name ) . '" name="exampapers_landing[' . esc_attr( $name ) . ']" type="text" value="' . esc_attr( (string) $value ) . '"></p>';
+}
+
+/**
+ * Render a textarea for landing meta.
+ *
+ * @param string $name Field name.
+ * @param string $label Field label.
+ * @param mixed  $value Field value.
+ * @param string $help Help text.
+ */
+function exampapers_landing_meta_textarea( $name, $label, $value, $help = '' ) {
+	echo '<p><label for="exampapers_' . esc_attr( $name ) . '"><strong>' . esc_html( $label ) . '</strong></label>';
+	echo '<textarea class="widefat" id="exampapers_' . esc_attr( $name ) . '" name="exampapers_landing[' . esc_attr( $name ) . ']" rows="4">' . esc_textarea( (string) $value ) . '</textarea>';
+
+	if ( $help ) {
+		echo '<span class="description">' . esc_html( $help ) . '</span>';
+	}
+
+	echo '</p>';
+}
+
+/**
+ * Render landing page meta box.
+ *
+ * @param WP_Post $post Post.
+ */
+function exampapers_landing_page_meta_box_callback( $post ) {
+	$data = exampapers_get_landing_page_meta( $post->ID );
+
+	wp_nonce_field( 'exampapers_landing_page_meta', 'exampapers_landing_page_meta_nonce' );
+
+	echo '<p><label><input type="checkbox" name="exampapers_landing[is_landing_page]" value="1" ' . checked( '1', (string) $data['is_landing_page'], false ) . '> ' . esc_html__( 'Use Exampapers landing page template', 'exampapers' ) . '</label></p>';
+
+	exampapers_landing_meta_text_input( 'meta_title', __( 'Meta title', 'exampapers' ), $data['meta_title'] );
+	exampapers_landing_meta_textarea( 'meta_description', __( 'Meta description', 'exampapers' ), $data['meta_description'] );
+	exampapers_landing_meta_textarea( 'intro', __( 'Intro text', 'exampapers' ), $data['intro'] );
+	exampapers_landing_meta_textarea( 'what_for', __( 'What this page is for', 'exampapers' ), $data['what_for'] );
+	exampapers_landing_meta_textarea( 'recommended', __( 'Popular packs / recommended papers', 'exampapers' ), $data['recommended'] );
+	exampapers_landing_meta_text_input( 'cta_label', __( 'CTA label', 'exampapers' ), $data['cta_label'] );
+	exampapers_landing_meta_text_input( 'cta_url', __( 'CTA URL', 'exampapers' ), $data['cta_url'] );
+	exampapers_landing_meta_textarea( 'disclaimer', __( 'Disclaimer', 'exampapers' ), $data['disclaimer'] );
+	exampapers_landing_meta_textarea( 'faqs', __( 'FAQ items', 'exampapers' ), exampapers_landing_format_faq_rows( $data['faqs'] ), __( 'One per line: Question | Answer', 'exampapers' ) );
+	exampapers_landing_meta_textarea( 'internal_links', __( 'Internal links', 'exampapers' ), exampapers_landing_format_link_rows( $data['internal_links'] ), __( 'One per line: Label | URL', 'exampapers' ) );
+
+	echo '<hr>';
+	echo '<h3>' . esc_html__( 'Product grid filters', 'exampapers' ) . '</h3>';
+	exampapers_landing_meta_text_input( 'exam_level', __( 'Exam Level', 'exampapers' ), $data['exam_level'] );
+	exampapers_landing_meta_text_input( 'exam_area', __( 'Exam Area', 'exampapers' ), $data['exam_area'] );
+	exampapers_landing_meta_text_input( 'exam_style', __( 'Exam Style', 'exampapers' ), $data['exam_style'] );
+	exampapers_landing_meta_text_input( 'subject', __( 'Subject', 'exampapers' ), $data['subject'] );
+	exampapers_landing_meta_text_input( 'format', __( 'Format', 'exampapers' ), $data['format'] );
+	exampapers_landing_meta_text_input( 'difficulty', __( 'Difficulty', 'exampapers' ), $data['difficulty'] );
+	exampapers_landing_meta_text_input( 'product_limit', __( 'Product limit', 'exampapers' ), $data['product_limit'] );
+}
+
+/**
+ * Save landing page meta.
+ *
+ * @param int $post_id Post ID.
+ */
+function exampapers_save_landing_page_meta( $post_id ) {
+	if ( ! isset( $_POST['exampapers_landing_page_meta_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['exampapers_landing_page_meta_nonce'] ) ), 'exampapers_landing_page_meta' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$input = isset( $_POST['exampapers_landing'] ) && is_array( $_POST['exampapers_landing'] )
+		? wp_unslash( $_POST['exampapers_landing'] )
+		: array();
+	$keys  = exampapers_landing_meta_keys();
+
+	update_post_meta( $post_id, $keys['is_landing_page'], ! empty( $input['is_landing_page'] ) ? '1' : '0' );
+
+	foreach ( array( 'meta_title', 'meta_description', 'intro', 'what_for', 'recommended', 'cta_label', 'cta_url', 'disclaimer' ) as $name ) {
+		$value = isset( $input[ $name ] ) ? (string) $input[ $name ] : '';
+		$value = 'cta_url' === $name ? esc_url_raw( $value ) : sanitize_textarea_field( $value );
+		update_post_meta( $post_id, $keys[ $name ], $value );
+	}
+
+	update_post_meta( $post_id, $keys['faqs'], exampapers_landing_parse_faq_rows( isset( $input['faqs'] ) ? (string) $input['faqs'] : '' ) );
+	update_post_meta( $post_id, $keys['internal_links'], exampapers_landing_parse_link_rows( isset( $input['internal_links'] ) ? (string) $input['internal_links'] : '' ) );
+
+	foreach ( array( 'exam_level', 'exam_area', 'exam_style', 'subject', 'format', 'difficulty' ) as $name ) {
+		update_post_meta( $post_id, $keys[ $name ], exampapers_landing_parse_list_value( isset( $input[ $name ] ) ? (string) $input[ $name ] : '' ) );
+	}
+
+	update_post_meta( $post_id, $keys['product_limit'], isset( $input['product_limit'] ) ? max( 1, (int) $input['product_limit'] ) : 8 );
+}
+add_action( 'save_post_page', 'exampapers_save_landing_page_meta' );

@@ -26,8 +26,16 @@ get_header();
 				<p class="exampapers-lede"><?php echo esc_html( $config['intro'] ); ?></p>
 			<?php endif; ?>
 
+			<?php if ( ! empty( $config['post_content'] ) ) : ?>
+				<div class="entry-content">
+					<?php echo apply_filters( 'the_content', $config['post_content'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</div>
+			<?php endif; ?>
+
 			<div class="exampapers-actions">
-				<a class="wp-element-button" href="<?php echo esc_url( home_url( '/product-category/free-samples/' ) ); ?>"><?php esc_html_e( 'Try Free Samples', 'exampapers' ); ?></a>
+				<?php if ( ! empty( $config['cta_label'] ) && ! empty( $config['cta_url'] ) ) : ?>
+					<a class="wp-element-button" href="<?php echo esc_url( exampapers_landing_url( $config['cta_url'] ) ); ?>"><?php echo esc_html( $config['cta_label'] ); ?></a>
+				<?php endif; ?>
 				<a class="wp-element-button is-style-outline" href="<?php echo esc_url( home_url( '/shop/' ) ); ?>"><?php esc_html_e( 'Browse Shop', 'exampapers' ); ?></a>
 			</div>
 		</section>
@@ -70,19 +78,22 @@ get_header();
 			</section>
 		<?php endif; ?>
 
-		<?php if ( ! empty( $config['links'] ) && is_array( $config['links'] ) ) : ?>
+		<?php if ( ! empty( $config['internal_links'] ) && is_array( $config['internal_links'] ) ) : ?>
 			<section class="exampapers-landing-links" aria-labelledby="exampapers-landing-links-title">
 				<h2 id="exampapers-landing-links-title"><?php esc_html_e( 'Related pages', 'exampapers' ); ?></h2>
 				<div class="exampapers-link-list">
-					<?php foreach ( $config['links'] as $label => $url ) : ?>
-						<a href="<?php echo esc_url( home_url( $url ) ); ?>"><?php echo esc_html( $label ); ?></a>
+					<?php foreach ( $config['internal_links'] as $link ) : ?>
+						<?php if ( empty( $link['label'] ) || empty( $link['url'] ) ) : ?>
+							<?php continue; ?>
+						<?php endif; ?>
+						<a href="<?php echo esc_url( exampapers_landing_url( $link['url'] ) ); ?>"><?php echo esc_html( $link['label'] ); ?></a>
 					<?php endforeach; ?>
 				</div>
 			</section>
 		<?php endif; ?>
 
 		<aside class="exampapers-disclaimer">
-			<?php esc_html_e( 'Disclaimer: 11+ exam formats and requirements differ by area, school and admission year. Always check the latest guidance from the relevant school, consortium or local authority.', 'exampapers' ); ?>
+			<?php echo esc_html( ! empty( $config['disclaimer'] ) ? $config['disclaimer'] : __( 'Disclaimer: 11+ exam formats and requirements differ by area, school and admission year. Always check the latest guidance from the relevant school, consortium or local authority.', 'exampapers' ) ); ?>
 		</aside>
 	</div>
 </main>
