@@ -275,6 +275,7 @@ function exampapers_archive_filters() {
 	$filters = array(
 		'pa_exam-level' => __( 'Exam Level', 'exampapers' ),
 		'pa_exam-area'  => __( 'Exam Area', 'exampapers' ),
+		'pa_exam-style' => __( 'Exam Style', 'exampapers' ),
 		'pa_subject'    => __( 'Subject', 'exampapers' ),
 		'pa_format'     => __( 'Format', 'exampapers' ),
 		'pa_difficulty' => __( 'Difficulty', 'exampapers' ),

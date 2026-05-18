@@ -18,6 +18,7 @@ function exampapers_product_attribute_map() {
 	return array(
 		'exam_level' => 'pa_exam-level',
 		'exam_area'  => 'pa_exam-area',
+		'exam_style' => 'pa_exam-style',
 		'subject'    => 'pa_subject',
 		'format'     => 'pa_format',
 		'difficulty' => 'pa_difficulty',
@@ -66,7 +67,7 @@ function exampapers_product_card_attributes( $product ) {
 
 	$items = array();
 
-	foreach ( array( 'exam_level', 'exam_area', 'subject', 'difficulty' ) as $key ) {
+	foreach ( array( 'exam_level', 'exam_area', 'exam_style', 'subject', 'difficulty' ) as $key ) {
 		$terms = exampapers_get_product_attribute_terms( $product, $key );
 
 		if ( ! empty( $terms ) ) {
@@ -120,6 +121,7 @@ function exampapers_product_info_sections( $product ) {
 	$subjects = exampapers_get_product_attribute_terms( $product, 'subject' );
 	$levels   = exampapers_get_product_attribute_terms( $product, 'exam_level' );
 	$areas    = exampapers_get_product_attribute_terms( $product, 'exam_area' );
+	$styles   = exampapers_get_product_attribute_terms( $product, 'exam_style' );
 	$formats  = exampapers_get_product_attribute_terms( $product, 'format' );
 
 	echo '<section class="exampapers-product-sections" aria-label="' . esc_attr__( 'Product details', 'exampapers' ) . '">';
@@ -129,7 +131,7 @@ function exampapers_product_info_sections( $product ) {
 
 	echo '<article class="exampapers-card"><h2>' . esc_html__( 'Who this is for', 'exampapers' ) . '</h2><p>';
 	echo esc_html__( 'Suitable for pupils preparing for', 'exampapers' ) . ' ';
-	echo esc_html( implode( ', ', array_filter( array_merge( $levels, $areas ) ) ) ?: __( 'school entrance exams', 'exampapers' ) );
+	echo esc_html( implode( ', ', array_filter( array_merge( $levels, $areas, $styles ) ) ) ?: __( 'school entrance exams', 'exampapers' ) );
 	echo '.</p></article>';
 
 	echo '<article class="exampapers-card"><h2>' . esc_html__( 'Skills covered', 'exampapers' ) . '</h2>';

@@ -53,6 +53,7 @@
 		}
 
 		var buttons = suggestions ? Array.prototype.slice.call(suggestions.querySelectorAll('[data-suggestion]')) : [];
+		var suppressNextFocusSuggestions = false;
 
 		function closeSuggestions() {
 			if (!suggestions) {
@@ -103,7 +104,14 @@
 		}
 
 		input.addEventListener('input', updateSuggestions);
-		input.addEventListener('focus', updateSuggestions);
+		input.addEventListener('focus', function () {
+			if (suppressNextFocusSuggestions) {
+				suppressNextFocusSuggestions = false;
+				return;
+			}
+
+			updateSuggestions();
+		});
 		input.addEventListener('keydown', function (event) {
 			if (event.key === 'Escape') {
 				closeSuggestions();
@@ -117,6 +125,7 @@
 					searchValue.value = input.value;
 				}
 				closeSuggestions();
+				suppressNextFocusSuggestions = true;
 				input.focus();
 			});
 		});
