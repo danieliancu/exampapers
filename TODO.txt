@@ -1,11 +1,10 @@
 1. Stabilim schema finală pentru produse
-
-
-
 2. Refacem seed-demo-products.php după schema nouă
 3. Ștergem produsele fake actuale
 4. Rulăm seed-ul nou și creăm produse fake curate
 5. Verificăm /shop și paginile de produs
+
+
 6. Construim sistemul de landing pages
 7. Creăm primele landing pages SEO
 8. Legăm landing pages de produse

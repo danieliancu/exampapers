@@ -6,10 +6,12 @@
  *   1. Log in as an administrator.
  *   2. Open /wp-content/themes/exampapers/tools/seed-demo-products.php?purge=1
  *   3. Open /wp-content/themes/exampapers/tools/seed-demo-products.php?run=1
+ *   4. Open /wp-content/themes/exampapers/tools/seed-demo-products.php?clean_categories=1
  *
  * CLI:
  *   php wp-content/themes/exampapers/tools/seed-demo-products.php --purge
  *   php wp-content/themes/exampapers/tools/seed-demo-products.php --run
+ *   php wp-content/themes/exampapers/tools/seed-demo-products.php --clean-categories
  *
  * @package Exampapers
  */
@@ -24,24 +26,27 @@ if ( ! file_exists( $wp_load ) ) {
 
 require_once $wp_load;
 
-$is_cli   = 'cli' === PHP_SAPI;
-$is_purge = $is_cli
+$is_cli              = 'cli' === PHP_SAPI;
+$is_purge            = $is_cli
 	? in_array( '--purge', $argv, true )
 	: ( ! empty( $_GET['purge'] ) && '1' === (string) $_GET['purge'] );
-$is_run   = $is_cli
+$is_run              = $is_cli
 	? in_array( '--run', $argv, true )
 	: ( ! empty( $_GET['run'] ) && '1' === (string) $_GET['run'] );
+$is_clean_categories = $is_cli
+	? in_array( '--clean-categories', $argv, true )
+	: ( ! empty( $_GET['clean_categories'] ) && '1' === (string) $_GET['clean_categories'] );
 
 if ( ! $is_cli ) {
 	if ( ! is_user_logged_in() || ! current_user_can( 'manage_woocommerce' ) ) {
 		wp_die( esc_html__( 'You must be logged in as an administrator with WooCommerce management access.', 'exampapers' ) );
 	}
 
-	if ( ! $is_purge && ! $is_run ) {
-		wp_die( esc_html__( 'Add ?run=1 to seed demo products, or ?purge=1 to delete all WooCommerce products.', 'exampapers' ) );
+	if ( ! $is_purge && ! $is_run && ! $is_clean_categories ) {
+		wp_die( esc_html__( 'Add ?run=1 to seed demo products, ?purge=1 to delete all WooCommerce products, or ?clean_categories=1 to clean product categories.', 'exampapers' ) );
 	}
-} elseif ( ! $is_purge && ! $is_run ) {
-	exit( 'Add --run to seed demo products, or --purge to delete all WooCommerce products.' . PHP_EOL );
+} elseif ( ! $is_purge && ! $is_run && ! $is_clean_categories ) {
+	exit( 'Add --run to seed demo products, --purge to delete all WooCommerce products, or --clean-categories to clean product categories.' . PHP_EOL );
 }
 
 if ( ! class_exists( 'WooCommerce' ) || ! class_exists( 'WC_Product_Simple' ) ) {
@@ -180,6 +185,47 @@ function exampapers_seed_product_placeholder_image() {
 }
 
 /**
+ * Final top-level product category names.
+ *
+ * @return string[]
+ */
+function exampapers_seed_top_level_categories() {
+	return array(
+		'11+ Practice Papers',
+		'Pre-11+ Practice',
+		'13+ Practice Papers',
+		'SATs Practice Papers',
+		'GCSE Practice Papers',
+		'Mock Exams',
+		'Bundles',
+		'Free Samples',
+	);
+}
+
+/**
+ * Final 11+ child product category names.
+ *
+ * @return string[]
+ */
+function exampapers_seed_eleven_plus_child_categories() {
+	return array(
+		'CSSE Essex 11+',
+		'Kent Test',
+		'Sutton SET',
+		'Bexley 11+',
+		'Buckinghamshire 11+',
+		'Medway Test',
+		'West Midlands Grammar Schools 11+',
+		'Trafford 11+',
+		'Gloucestershire 11+',
+		'Redbridge 11+',
+		'Tiffin 11+',
+		'Slough Consortium 11+',
+		'SEAG Northern Ireland',
+	);
+}
+
+/**
  * Ensure a product category exists.
  *
  * @param string $name Category name.
@@ -187,7 +233,7 @@ function exampapers_seed_product_placeholder_image() {
  * @return int
  */
 function exampapers_seed_category( $name, $parent_id = 0 ) {
-	$term = term_exists( $name, 'product_cat', $parent_id );
+	$term = term_exists( $name, 'product_cat' );
 
 	if ( 0 === $term || null === $term ) {
 		$term = wp_insert_term(
@@ -197,7 +243,7 @@ function exampapers_seed_category( $name, $parent_id = 0 ) {
 				'parent' => $parent_id,
 			)
 		);
-	} elseif ( $parent_id ) {
+	} else {
 		$term_id       = is_array( $term ) ? (int) $term['term_id'] : (int) $term;
 		$current_term  = get_term( $term_id, 'product_cat' );
 		$current_parent = $current_term && ! is_wp_error( $current_term ) ? (int) $current_term->parent : 0;
@@ -208,6 +254,25 @@ function exampapers_seed_category( $name, $parent_id = 0 ) {
 	}
 
 	return is_wp_error( $term ) ? 0 : (int) $term['term_id'];
+}
+
+/**
+ * Ensure the final product category hierarchy exists.
+ *
+ * @return array<string,int>
+ */
+function exampapers_seed_ensure_final_categories() {
+	$category_ids = array();
+
+	foreach ( exampapers_seed_top_level_categories() as $category_name ) {
+		$category_ids[ $category_name ] = exampapers_seed_category( $category_name );
+	}
+
+	foreach ( exampapers_seed_eleven_plus_child_categories() as $category_name ) {
+		$category_ids[ $category_name ] = exampapers_seed_category( $category_name, $category_ids['11+ Practice Papers'] );
+	}
+
+	return $category_ids;
 }
 
 /**
@@ -333,6 +398,257 @@ function exampapers_seed_purge_products() {
 	return $deleted;
 }
 
+/**
+ * Category names to delete and their preferred final category destinations.
+ *
+ * @return array<string,string>
+ */
+function exampapers_seed_unwanted_category_map() {
+	return array(
+		'English'                => '',
+		'Maths'                  => '',
+		'Vocabulary'             => '',
+		'Creative Writing'       => '',
+		'Verbal Reasoning'       => '',
+		'Non-Verbal Reasoning'   => '',
+		'Online Tests'           => '',
+		'CSSE 11+'               => 'CSSE Essex 11+',
+		'Bexley'                 => 'Bexley 11+',
+		'Buckinghamshire'        => 'Buckinghamshire 11+',
+		'Tiffin'                 => 'Tiffin 11+',
+		'GL Style 11+'           => '11+ Practice Papers',
+		'CEM Style'              => '11+ Practice Papers',
+		'SATs Practice'          => 'SATs Practice Papers',
+		'GCSE Practice'          => 'GCSE Practice Papers',
+		'13+ Practice'           => '13+ Practice Papers',
+	);
+}
+
+/**
+ * Find product category terms by exact name or expected slug.
+ *
+ * @param string $name Category name.
+ * @return WP_Term[]
+ */
+function exampapers_seed_find_category_terms( $name ) {
+	$expected_slug = sanitize_title( $name );
+	$terms         = get_terms(
+		array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => false,
+			'name'       => $name,
+		)
+	);
+
+	if ( is_wp_error( $terms ) ) {
+		$terms = array();
+	}
+
+	$slug_term = get_term_by( 'slug', $expected_slug, 'product_cat' );
+
+	if ( $slug_term instanceof WP_Term ) {
+		$terms[] = $slug_term;
+	}
+
+	$unique_terms = array();
+
+	foreach ( $terms as $term ) {
+		if ( $term instanceof WP_Term && ( $term->name === $name || $term->slug === $expected_slug ) ) {
+			$unique_terms[ $term->term_id ] = $term;
+		}
+	}
+
+	return array_values( $unique_terms );
+}
+
+/**
+ * Pick a final fallback category from a product's Exam Level attribute.
+ *
+ * @param int   $product_id Product ID.
+ * @param array $category_ids Final category IDs by name.
+ * @return int
+ */
+function exampapers_seed_fallback_category_id_for_product( $product_id, array $category_ids ) {
+	$levels = taxonomy_exists( 'pa_exam-level' )
+		? wp_get_post_terms( $product_id, 'pa_exam-level', array( 'fields' => 'names' ) )
+		: array();
+
+	if ( is_wp_error( $levels ) ) {
+		$levels = array();
+	}
+
+	$fallbacks = array(
+		'Pre-11+'       => 'Pre-11+ Practice',
+		'13+'           => '13+ Practice Papers',
+		'SATs'          => 'SATs Practice Papers',
+		'GCSE'          => 'GCSE Practice Papers',
+		'11+'           => '11+ Practice Papers',
+		'SEAG'          => '11+ Practice Papers',
+		'ISEB Pre-Test' => '11+ Practice Papers',
+	);
+
+	foreach ( $levels as $level ) {
+		if ( ! empty( $fallbacks[ $level ] ) && ! empty( $category_ids[ $fallbacks[ $level ] ] ) ) {
+			return (int) $category_ids[ $fallbacks[ $level ] ];
+		}
+	}
+
+	return (int) $category_ids['11+ Practice Papers'];
+}
+
+/**
+ * Remove Uncategorized from demo products that already have a final category.
+ *
+ * @param int[] $final_category_ids Final category IDs.
+ * @return int Number of products updated.
+ */
+function exampapers_seed_remove_uncategorized_from_demo_products( array $final_category_ids ) {
+	$uncategorized = get_term_by( 'slug', 'uncategorized', 'product_cat' );
+
+	if ( ! $uncategorized instanceof WP_Term ) {
+		return 0;
+	}
+
+	$product_ids = get_posts(
+		array(
+			'post_type'      => 'product',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'meta_query'     => array(
+				array(
+					'key'     => '_sku',
+					'value'   => 'DEMO-',
+					'compare' => 'LIKE',
+				),
+			),
+		)
+	);
+
+	$updated = 0;
+
+	foreach ( $product_ids as $product_id ) {
+		$current_ids = wp_get_object_terms( (int) $product_id, 'product_cat', array( 'fields' => 'ids' ) );
+
+		if ( is_wp_error( $current_ids ) || ! in_array( (int) $uncategorized->term_id, array_map( 'intval', $current_ids ), true ) ) {
+			continue;
+		}
+
+		$new_ids = array_values( array_diff( array_map( 'intval', $current_ids ), array( (int) $uncategorized->term_id ) ) );
+
+		if ( empty( array_intersect( $new_ids, $final_category_ids ) ) ) {
+			continue;
+		}
+
+		wp_set_object_terms( (int) $product_id, $new_ids, 'product_cat' );
+		$updated++;
+	}
+
+	return $updated;
+}
+
+/**
+ * Clean old product categories while preserving products and attributes.
+ *
+ * @return array<string,int>
+ */
+function exampapers_seed_clean_product_categories() {
+	$category_ids       = exampapers_seed_ensure_final_categories();
+	$final_category_ids = array_values( array_map( 'intval', $category_ids ) );
+	$deleted           = 0;
+	$moved_products    = 0;
+	$skipped           = 0;
+
+	exampapers_seed_line( 'Final category hierarchy ensured.' );
+
+	foreach ( exampapers_seed_unwanted_category_map() as $old_category_name => $target_category_name ) {
+		$terms = exampapers_seed_find_category_terms( $old_category_name );
+
+		if ( empty( $terms ) ) {
+			exampapers_seed_line( 'Not found: ' . $old_category_name );
+			continue;
+		}
+
+		foreach ( $terms as $term ) {
+			$target_category_id = ! empty( $target_category_name ) && ! empty( $category_ids[ $target_category_name ] )
+				? (int) $category_ids[ $target_category_name ]
+				: 0;
+			$object_ids         = get_objects_in_term( (int) $term->term_id, 'product_cat' );
+
+			if ( is_wp_error( $object_ids ) ) {
+				$skipped++;
+				exampapers_seed_line( 'Skipped: ' . $term->name . ' (could not read assigned products)' );
+				continue;
+			}
+
+			foreach ( $object_ids as $object_id ) {
+				if ( 'product' !== get_post_type( (int) $object_id ) ) {
+					continue;
+				}
+
+				$current_ids = wp_get_object_terms( (int) $object_id, 'product_cat', array( 'fields' => 'ids' ) );
+
+				if ( is_wp_error( $current_ids ) ) {
+					continue;
+				}
+
+				$new_ids = array_values( array_diff( array_map( 'intval', $current_ids ), array( (int) $term->term_id ) ) );
+
+				if ( $target_category_id ) {
+					$new_ids[] = $target_category_id;
+				}
+
+				if ( empty( array_intersect( $new_ids, $final_category_ids ) ) ) {
+					$new_ids[] = exampapers_seed_fallback_category_id_for_product( (int) $object_id, $category_ids );
+				}
+
+				$new_ids = array_values( array_unique( array_filter( array_map( 'intval', $new_ids ) ) ) );
+				wp_set_object_terms( (int) $object_id, $new_ids, 'product_cat' );
+				$moved_products++;
+			}
+
+			$deleted_term = wp_delete_term( (int) $term->term_id, 'product_cat' );
+
+			if ( is_wp_error( $deleted_term ) || ! $deleted_term ) {
+				$skipped++;
+				exampapers_seed_line( 'Skipped delete: ' . $term->name );
+				continue;
+			}
+
+			$deleted++;
+			exampapers_seed_line( 'Deleted category: ' . $term->name );
+		}
+	}
+
+	$uncategorized_updates = exampapers_seed_remove_uncategorized_from_demo_products( $final_category_ids );
+
+	exampapers_seed_line( 'Remaining Product Categories:' );
+
+	$remaining_terms = get_terms(
+		array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => false,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+		)
+	);
+
+	if ( ! is_wp_error( $remaining_terms ) ) {
+		foreach ( $remaining_terms as $term ) {
+			$parent = $term->parent ? get_term( (int) $term->parent, 'product_cat' ) : null;
+			$label  = $parent instanceof WP_Term ? $parent->name . ' > ' . $term->name : $term->name;
+			exampapers_seed_line( 'Kept: ' . $label );
+		}
+	}
+
+	return array(
+		'deleted'                 => $deleted,
+		'moved_products'          => $moved_products,
+		'skipped'                 => $skipped,
+		'uncategorized_products'  => $uncategorized_updates,
+	);
+}
+
 if ( $is_purge ) {
 	exampapers_seed_open_output( 'Exampapers product purge' );
 	$deleted = exampapers_seed_purge_products();
@@ -341,42 +657,15 @@ if ( $is_purge ) {
 	exit;
 }
 
-$category_ids = array();
-
-$top_level_categories = array(
-	'11+ Practice Papers',
-	'Pre-11+ Practice',
-	'13+ Practice Papers',
-	'SATs Practice Papers',
-	'GCSE Practice Papers',
-	'Mock Exams',
-	'Bundles',
-	'Free Samples',
-);
-
-foreach ( $top_level_categories as $category_name ) {
-	$category_ids[ $category_name ] = exampapers_seed_category( $category_name );
+if ( $is_clean_categories ) {
+	exampapers_seed_open_output( 'Exampapers product category cleanup' );
+	$cleanup = exampapers_seed_clean_product_categories();
+	exampapers_seed_line( 'Done. Deleted ' . $cleanup['deleted'] . ' old categor' . ( 1 === $cleanup['deleted'] ? 'y' : 'ies' ) . ', updated ' . $cleanup['moved_products'] . ' product assignment(s), removed Uncategorized from ' . $cleanup['uncategorized_products'] . ' demo product(s), skipped ' . $cleanup['skipped'] . ' item(s).' );
+	exampapers_seed_close_output();
+	exit;
 }
 
-$eleven_plus_children = array(
-	'CSSE Essex 11+',
-	'Kent Test',
-	'Sutton SET',
-	'Bexley 11+',
-	'Buckinghamshire 11+',
-	'Medway Test',
-	'West Midlands Grammar Schools 11+',
-	'Trafford 11+',
-	'Gloucestershire 11+',
-	'Redbridge 11+',
-	'Tiffin 11+',
-	'Slough Consortium 11+',
-	'SEAG Northern Ireland',
-);
-
-foreach ( $eleven_plus_children as $category_name ) {
-	$category_ids[ $category_name ] = exampapers_seed_category( $category_name, $category_ids['11+ Practice Papers'] );
-}
+$category_ids = exampapers_seed_ensure_final_categories();
 
 $attribute_taxonomies = array(
 	'exam_level' => exampapers_seed_attribute( 'Exam Level', 'exam-level', array( 'Pre-11+', '11+', '13+', 'SATs', 'GCSE', 'SEAG', 'ISEB Pre-Test' ) ),
