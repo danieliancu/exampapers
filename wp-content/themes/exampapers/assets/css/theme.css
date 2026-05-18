@@ -518,6 +518,34 @@ textarea:focus {
 	text-decoration: none;
 }
 
+.exampapers-landing-page .exampapers-section-inner {
+	gap: clamp(2rem, 5vw, 4rem);
+}
+
+.exampapers-landing-hero,
+.exampapers-landing-products,
+.exampapers-landing-links {
+	display: grid;
+	gap: 1rem;
+}
+
+.exampapers-landing-hero h1,
+.exampapers-landing-products h2,
+.exampapers-landing-links h2 {
+	margin-bottom: 0;
+}
+
+.exampapers-landing-info-grid {
+	display: grid;
+	gap: clamp(1rem, 2.5vw, 1.5rem);
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+
+.exampapers-landing-faq {
+	display: grid;
+	gap: 0.5rem;
+}
+
 .exampapers-faq-list details,
 .exampapers-product-sections details {
 	border-top: 1px solid var(--exampapers-line);

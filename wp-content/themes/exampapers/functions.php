@@ -15,6 +15,7 @@ $exampapers_includes = array(
 	'inc/product-meta.php',
 	'inc/enqueue.php',
 	'inc/seo.php',
+	'inc/landing-pages.php',
 	'inc/woocommerce.php',
 );
 
