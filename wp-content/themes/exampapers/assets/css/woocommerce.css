@@ -107,8 +107,10 @@
 	color: #ffffff;
 	cursor: pointer;
 	font-weight: 800;
+	margin-top: 0.5rem;
 	min-height: 2.75rem;
 	padding: 0.75rem 1rem;
+	width: 100%;
 }
 
 .exampapers-product-search button:hover,
@@ -435,7 +437,7 @@ ul.products li.product,
 
 .woocommerce ul.products li.product .button {
 	border-radius: 0px !important;
-	width: auto !important;
+	width: 100% !important;
 }
 
 .woocommerce ul.products li.product .button:hover,

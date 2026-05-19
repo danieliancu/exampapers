@@ -30,8 +30,8 @@ $exam_level_url = static function ( $category_name ) use ( $shop_url ) {
 		<p><?php esc_html_e( 'Start with the exam level your child is preparing for.', 'exampapers' ); ?></p>
 		<div class="exampapers-feature-grid">
 			<a class="exampapers-card exampapers-nav-card exampapers-nav-card--featured" href="<?php echo esc_url( $exam_level_url( '11+ Practice Papers' ) ); ?>"><span><?php esc_html_e( '11+', 'exampapers' ); ?></span><small><?php esc_html_e( 'For grammar school entrance preparation, usually taken in Year 6 for Year 7 entry.', 'exampapers' ); ?></small></a>
-			<a class="exampapers-card exampapers-nav-card" href="<?php echo esc_url( $exam_level_url( 'SATs Practice Papers' ) ); ?>"><span><?php esc_html_e( 'SATs', 'exampapers' ); ?></span><small><?php esc_html_e( 'For Year 6 end-of-primary-school practice in reading, maths and related skills.', 'exampapers' ); ?></small></a>
-			<a class="exampapers-card exampapers-nav-card" href="<?php echo esc_url( $exam_level_url( 'GCSE Practice Papers' ) ); ?>"><span><?php esc_html_e( 'GCSE', 'exampapers' ); ?></span><small><?php esc_html_e( 'For secondary school revision and exam practice, commonly taken in Year 11.', 'exampapers' ); ?></small></a>
+			<div class="exampapers-card exampapers-nav-card exampapers-nav-card--disabled" aria-disabled="true"><span><?php esc_html_e( 'SATs', 'exampapers' ); ?> <em class="exampapers-coming-soon-pill"><?php esc_html_e( 'Coming soon', 'exampapers' ); ?></em></span><small><?php esc_html_e( 'For Year 6 end-of-primary-school practice in reading, maths and related skills.', 'exampapers' ); ?></small></div>
+			<div class="exampapers-card exampapers-nav-card exampapers-nav-card--disabled" aria-disabled="true"><span><?php esc_html_e( 'GCSE', 'exampapers' ); ?> <em class="exampapers-coming-soon-pill"><?php esc_html_e( 'Coming soon', 'exampapers' ); ?></em></span><small><?php esc_html_e( 'For secondary school revision and exam practice, commonly taken in Year 11.', 'exampapers' ); ?></small></div>
 		</div>
 	</div>
 </section>

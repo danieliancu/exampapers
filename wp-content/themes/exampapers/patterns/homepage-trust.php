@@ -30,8 +30,8 @@
 			</article>
 			<article class="exampapers-card">
 				<span class="dashicons dashicons-category exampapers-card-icon" aria-hidden="true"></span>
-				<h3><?php esc_html_e( 'Organised by exam area and subject', 'exampapers' ); ?></h3>
-				<p><?php esc_html_e( 'Choose papers by level, area, style or subject without using complicated filters.', 'exampapers' ); ?></p>
+				<h3><?php esc_html_e( 'Organised by exam region and subject', 'exampapers' ); ?></h3>
+				<p><?php esc_html_e( 'Choose papers by level, region, style or subject without using complicated filters.', 'exampapers' ); ?></p>
 			</article>
 		</div>
 	</div>

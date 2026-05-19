@@ -149,14 +149,14 @@
 		var data = form.querySelector('[data-exampapers-filter-matches]');
 		var schoolData = form.querySelector('[data-exampapers-area-schools]');
 		var areaSchoolsOutput = form.querySelector('[data-exampapers-area-schools-output]');
-		var filterWrapper = form.querySelector('.exampapers-hero-filters');
-		var selects = Array.prototype.slice.call(form.querySelectorAll('select[name="exam_level"], select[name="exam_area"], select[name="subject"]'));
+		var selects = Array.prototype.slice.call(form.querySelectorAll('select[name="exam_level"], select[name="exam_region"], select[name="exam_area"], select[name="subject"]'));
 		var matches = [];
 		var areaSchools = {};
-		var areaRequiredLevel = filterWrapper ? filterWrapper.getAttribute('data-exampapers-area-required-level') || '' : '';
 		var levelSelect = form.querySelector('select[name="exam_level"]');
+		var regionSelect = form.querySelector('select[name="exam_region"]');
 		var areaSelect = form.querySelector('select[name="exam_area"]');
 		var subjectSelect = form.querySelector('select[name="subject"]');
+		var lockedAreaInput = null;
 
 		if (!data || !selects.length) {
 			return;
@@ -205,18 +205,13 @@
 		function isValidOption(select, value) {
 			var selection = getSelection(select.name);
 
-			if (select.name === 'exam_area') {
-				if (areaRequiredLevel && selection.exam_level && selection.exam_level !== areaRequiredLevel) {
-					return false;
-				}
+			if (select.name === 'exam_region') {
+				delete selection.exam_area;
+				delete selection.subject;
+			}
 
-				if (areaRequiredLevel && !selection.exam_level) {
-					return false;
-				}
-
-				if (areaRequiredLevel && selection.exam_level === areaRequiredLevel && !selection.subject) {
-					return true;
-				}
+			if (select.name === 'subject' && areaSelect && !areaSelect.value) {
+				delete selection.exam_area;
 			}
 
 			return matches.some(function (match) {
@@ -224,14 +219,101 @@
 			});
 		}
 
+		function getValidOptionValues(select) {
+			if (!select) {
+				return [];
+			}
+
+			return Array.prototype.slice.call(select.options).filter(function (option) {
+				return option.value && isValidOption(select, option.value);
+			}).map(function (option) {
+				return option.value;
+			});
+		}
+
+		function getRegionAreaValues() {
+			var selection = getSelection('exam_area');
+			var values = [];
+
+			delete selection.subject;
+
+			matches.forEach(function (match) {
+				if (!matchesSelection(match, selection) || !Array.isArray(match.exam_area)) {
+					return;
+				}
+
+				match.exam_area.forEach(function (value) {
+					if (value && values.indexOf(value) === -1) {
+						values.push(value);
+					}
+				});
+			});
+
+			return values;
+		}
+
+		function getSchoolListForAreaValues(areaValues) {
+			var schoolsByName = {};
+			var schools = [];
+
+			areaValues.forEach(function (areaValue) {
+				if (!Array.isArray(areaSchools[areaValue])) {
+					return;
+				}
+
+				areaSchools[areaValue].forEach(function (school) {
+					if (!school || !school.name || schoolsByName[school.name]) {
+						return;
+					}
+
+					schoolsByName[school.name] = true;
+					schools.push(school);
+				});
+			});
+
+			return schools;
+		}
+
+		function syncLockedAreaInput() {
+			if (!areaSelect) {
+				return;
+			}
+
+			if (areaSelect.disabled && areaSelect.value) {
+				if (!lockedAreaInput) {
+					lockedAreaInput = document.createElement('input');
+					lockedAreaInput.type = 'hidden';
+					lockedAreaInput.name = areaSelect.name;
+					form.appendChild(lockedAreaInput);
+				}
+
+				lockedAreaInput.value = areaSelect.value;
+				return;
+			}
+
+			if (lockedAreaInput && lockedAreaInput.parentNode) {
+				lockedAreaInput.parentNode.removeChild(lockedAreaInput);
+			}
+
+			lockedAreaInput = null;
+		}
+
 		function updateAreaSchools() {
+			var areaValues;
 			var schools;
 
 			if (!areaSchoolsOutput || !areaSelect) {
 				return;
 			}
 
-			schools = areaSelect.value && Array.isArray(areaSchools[areaSelect.value]) ? areaSchools[areaSelect.value] : [];
+			if (!regionSelect || !regionSelect.value) {
+				areaSchoolsOutput.innerHTML = '';
+				areaSchoolsOutput.hidden = true;
+				return;
+			}
+
+			areaValues = areaSelect.value ? [areaSelect.value] : getRegionAreaValues();
+			schools = getSchoolListForAreaValues(areaValues);
 
 			areaSchoolsOutput.innerHTML = '';
 
@@ -257,17 +339,38 @@
 		}
 
 		function updateFilterAvailability() {
-			var areaDisabled = !levelSelect || !levelSelect.value;
-			var subjectDisabled = !areaSelect || !areaSelect.value || areaDisabled;
+			var regionDisabled = !levelSelect || !levelSelect.value;
+			var areaDisabled = !regionSelect || !regionSelect.value || regionDisabled;
+			var validAreaValues = areaDisabled ? [] : getValidOptionValues(areaSelect);
+			var singleAreaValue = validAreaValues.length === 1 ? validAreaValues[0] : '';
+			var subjectDisabled = !regionSelect || !regionSelect.value || regionDisabled;
+
+			if (regionSelect) {
+				if (regionDisabled && regionSelect.value) {
+					regionSelect.value = '';
+				}
+
+				regionSelect.disabled = regionDisabled;
+				regionSelect.setAttribute('aria-disabled', regionDisabled ? 'true' : 'false');
+			}
 
 			if (areaSelect) {
 				if (areaDisabled && areaSelect.value) {
 					areaSelect.value = '';
+				} else if (areaSelect.value && validAreaValues.indexOf(areaSelect.value) === -1) {
+					areaSelect.value = '';
 				}
 
-				areaSelect.disabled = areaDisabled;
-				areaSelect.setAttribute('aria-disabled', areaDisabled ? 'true' : 'false');
+				if (singleAreaValue && areaSelect.value !== singleAreaValue) {
+					areaSelect.value = singleAreaValue;
+				}
+
+				areaSelect.disabled = areaDisabled || !!singleAreaValue;
+				areaSelect.setAttribute('aria-disabled', areaSelect.disabled ? 'true' : 'false');
+				syncLockedAreaInput();
 			}
+
+			subjectDisabled = !regionSelect || !regionSelect.value || regionDisabled;
 
 			if (subjectSelect) {
 				if (subjectDisabled && subjectSelect.value) {

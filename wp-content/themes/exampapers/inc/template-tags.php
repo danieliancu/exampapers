@@ -205,7 +205,7 @@ function exampapers_site_footer() {
 		<div class="exampapers-footer__inner">
 			<section>
 				<h3><?php esc_html_e( 'Exampapers', 'exampapers' ); ?></h3>
-				<p><?php esc_html_e( 'Downloadable exam practice papers for UK school entrance preparation.', 'exampapers' ); ?></p>
+				<p><?php esc_html_e( 'Downloadable exam practice papers for UK school entrance preparation. Exampapers Ltd is independent and is not official or affiliated with any exam board, school, local authority or admissions body.', 'exampapers' ); ?></p>
 			</section>
 
 			<section>
@@ -218,8 +218,19 @@ function exampapers_site_footer() {
 			</section>
 
 			<section>
+				<h3><?php esc_html_e( 'Legal', 'exampapers' ); ?></h3>
+				<ul>
+					<li><a href="<?php echo esc_url( home_url( '/terms-and-conditions/' ) ); ?>"><?php esc_html_e( 'Terms & Conditions', 'exampapers' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>"><?php esc_html_e( 'Privacy Policy', 'exampapers' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/refund-digital-download-policy/' ) ); ?>"><?php esc_html_e( 'Refund / Digital Download Policy', 'exampapers' ); ?></a></li>
+					<li><a href="<?php echo esc_url( home_url( '/cookie-notice/' ) ); ?>"><?php esc_html_e( 'Cookie notice', 'exampapers' ); ?></a></li>
+				</ul>
+			</section>
+
+			<section>
 				<h3><?php esc_html_e( 'Guidance', 'exampapers' ); ?></h3>
 				<p><?php esc_html_e( 'Always check current admission guidance from your exam area, school or local authority before preparing.', 'exampapers' ); ?></p>
+				<p><?php esc_html_e( 'Secure payments are handled through Stripe, PayPal and WooCommerce checkout integrations.', 'exampapers' ); ?></p>
 			</section>
 		</div>
 	</footer>
