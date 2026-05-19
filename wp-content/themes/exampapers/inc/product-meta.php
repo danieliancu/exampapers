@@ -21,6 +21,7 @@ function exampapers_product_attribute_map() {
 		'exam_style' => 'pa_exam-style',
 		'subject'    => 'pa_subject',
 		'format'     => 'pa_format',
+		'question_format' => 'pa_question-format',
 		'difficulty' => 'pa_difficulty',
 		'school'     => 'pa_school',
 	);
@@ -65,22 +66,21 @@ function exampapers_product_card_attributes( $product ) {
 		return;
 	}
 
-	$items = array();
-
-	foreach ( array( 'exam_level', 'exam_area', 'exam_style', 'subject', 'difficulty' ) as $key ) {
-		$terms = exampapers_get_product_attribute_terms( $product, $key );
-
-		if ( ! empty( $terms ) ) {
-			$items[] = $terms[0];
-		}
-	}
+	$items = array_values(
+		array_unique(
+			array_merge(
+				exampapers_get_product_attribute_terms( $product, 'subject' ),
+				exampapers_get_product_attribute_terms( $product, 'question_format' )
+			)
+		)
+	);
 
 	if ( empty( $items ) ) {
 		return;
 	}
 
 	echo '<ul class="exampapers-product-meta-list">';
-	foreach ( array_slice( $items, 0, 4 ) as $item ) {
+	foreach ( $items as $item ) {
 		echo '<li>' . esc_html( $item ) . '</li>';
 	}
 	echo '</ul>';

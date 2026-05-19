@@ -154,6 +154,9 @@
 		var matches = [];
 		var areaSchools = {};
 		var areaRequiredLevel = filterWrapper ? filterWrapper.getAttribute('data-exampapers-area-required-level') || '' : '';
+		var levelSelect = form.querySelector('select[name="exam_level"]');
+		var areaSelect = form.querySelector('select[name="exam_area"]');
+		var subjectSelect = form.querySelector('select[name="subject"]');
 
 		if (!data || !selects.length) {
 			return;
@@ -222,7 +225,6 @@
 		}
 
 		function updateAreaSchools() {
-			var areaSelect = form.querySelector('select[name="exam_area"]');
 			var schools;
 
 			if (!areaSchoolsOutput || !areaSelect) {
@@ -238,22 +240,15 @@
 				return;
 			}
 
-			var title = document.createElement('span');
 			var list = document.createElement('ul');
-			title.className = 'exampapers-area-schools__title';
-			title.textContent = '+ Schools';
-			areaSchoolsOutput.appendChild(title);
 
 			schools.forEach(function (school) {
-				if (!school || !school.name || !school.url) {
+				if (!school || !school.name) {
 					return;
 				}
 
 				var item = document.createElement('li');
-				var link = document.createElement('a');
-				link.href = school.url;
-				link.textContent = school.name;
-				item.appendChild(link);
+				item.textContent = school.name;
 				list.appendChild(item);
 			});
 
@@ -261,8 +256,31 @@
 			areaSchoolsOutput.hidden = false;
 		}
 
+		function updateFilterAvailability() {
+			var areaDisabled = !levelSelect || !levelSelect.value;
+			var subjectDisabled = !areaSelect || !areaSelect.value || areaDisabled;
+
+			if (areaSelect) {
+				if (areaDisabled && areaSelect.value) {
+					areaSelect.value = '';
+				}
+
+				areaSelect.disabled = areaDisabled;
+				areaSelect.setAttribute('aria-disabled', areaDisabled ? 'true' : 'false');
+			}
+
+			if (subjectSelect) {
+				if (subjectDisabled && subjectSelect.value) {
+					subjectSelect.value = '';
+				}
+
+				subjectSelect.disabled = subjectDisabled;
+				subjectSelect.setAttribute('aria-disabled', subjectDisabled ? 'true' : 'false');
+			}
+		}
+
 		function updateSelectOptions() {
-			var changed = false;
+			updateFilterAvailability();
 
 			selects.forEach(function (select) {
 				Array.prototype.slice.call(select.options).forEach(function (option) {
@@ -274,22 +292,11 @@
 				});
 			});
 
-			if (changed) {
-				updateSelectOptions();
-				return;
-			}
-
 			updateAreaSchools();
 		}
 
 		selects.forEach(function (select) {
 			select.addEventListener('change', function () {
-				var areaSelect = form.querySelector('select[name="exam_area"]');
-
-				if (select.name === 'exam_level' && areaSelect && areaRequiredLevel && select.value !== areaRequiredLevel) {
-					areaSelect.value = '';
-				}
-
 				updateSelectOptions();
 			});
 		});

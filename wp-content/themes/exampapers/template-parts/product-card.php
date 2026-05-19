@@ -13,7 +13,7 @@ if ( ! $product instanceof WC_Product || ! $product->is_visible() ) {
 	return;
 }
 
-$show_product_media = ! is_shop();
+$show_product_media = (bool) $product->get_image_id();
 
 ?>
 
@@ -21,28 +21,13 @@ $show_product_media = ! is_shop();
 	<a class="exampapers-product-card-link" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'View %s', 'exampapers' ), get_the_title() ) ); ?>">
 		<?php if ( $show_product_media ) : ?>
 			<span class="exampapers-product-card-media">
-				<?php if ( has_post_thumbnail() ) : ?>
-					<?php echo woocommerce_get_product_thumbnail(); ?>
-				<?php else : ?>
-					<span class="exampapers-product-placeholder" aria-hidden="true">PDF</span>
-				<?php endif; ?>
+				<?php echo woocommerce_get_product_thumbnail(); ?>
 			</span>
 		<?php endif; ?>
 
 		<?php exampapers_product_badges( $product ); ?>
 
 		<h2 class="woocommerce-loop-product__title exampapers-product-card-title"><?php the_title(); ?></h2>
-
-		<p class="exampapers-product-card-excerpt">
-			<?php
-			echo wp_kses_post(
-				wp_trim_words(
-					$product->get_short_description() ? $product->get_short_description() : $product->get_description(),
-					24
-				)
-			);
-			?>
-		</p>
 
 		<?php exampapers_product_card_attributes( $product ); ?>
 	</a>

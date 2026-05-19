@@ -22,6 +22,10 @@
 	font-size: 42px;
 }
 
+.woocommerce-page label {
+	margin-bottom: 0;
+}
+
 .exampapers-shop-header {
 	display: grid;
 	gap: 1rem;
@@ -318,6 +322,21 @@ ul.products li.product,
 .woocommerce ul.products li.product .woocommerce-product-details__short-description,
 .woocommerce ul.products li.product .wp-block-post-excerpt {
 	display: block;
+}
+
+.exampapers-product-card-excerpt ul {
+	list-style: disc;
+	list-style-position: inside;
+	margin: 0.35rem 0 0;
+	padding-left: 0;
+}
+
+.exampapers-product-card-excerpt li {
+	margin: 0.15rem 0;
+}
+
+.exampapers-product-card-excerpt li:nth-child(n+4) {
+	display: none;
 }
 
 .exampapers-product-meta-list {
